@@ -62,10 +62,16 @@ DOCKER_RUN=(
   "${COMMON_ENV[@]}"
 )
 
-# Note on flags: --trust-remote-code is accepted but ignored by v0.17.1
-# (it's only relevant for HF Auto* classes, not vLLM's own loaders), so we
-# omit it. --limit-mm-per-prompt video=0 keeps the multimodal slot reserved
-# for images only — we never feed video.
+# Note on flags:
+#   --trust-remote-code is accepted but ignored on v0.17.1 (only matters for
+#   HF Auto* classes, not vLLM's own loaders), so we omit it.
+#
+#   --limit-mm-per-prompt is omitted: on v0.17.1 the value must be JSON
+#   (e.g. '{"video": 0}'), the older `key=value` shorthand from
+#   rocm/vllm-dev:nightly examples crashes argparse with
+#   `Value video=0 cannot be converted to <function loads ...>`. We don't
+#   need to limit modality per prompt for our workload, so dropping the
+#   flag keeps the command portable across image versions.
 
 case "$MODE" in
   dev)
@@ -74,15 +80,15 @@ case "$MODE" in
     # First-run AITER JIT compile takes ~10-15 min before /v1/models becomes
     # ready; subsequent starts hit the JIT cache and warm in ~2 min.
     echo "[serve_vllm] mode=dev — Qwen2.5-VL-7B-Instruct"
+    docker rm -f vllm-7b 2>/dev/null || true
     MODEL="Qwen/Qwen2.5-VL-7B-Instruct"
-    "${DOCKER_RUN[@]}" "$IMAGE" \
+    "${DOCKER_RUN[@]}" --name vllm-7b "$IMAGE" \
       "$MODEL" \
         --port 8000 \
         --api-key EMPTY \
         --max-model-len 8192 \
         --max-num-seqs 8 \
-        --gpu-memory-utilization 0.85 \
-        --limit-mm-per-prompt video=0
+        --gpu-memory-utilization 0.85
     ;;
 
   prod)
@@ -92,15 +98,15 @@ case "$MODE" in
     # excerpts comfortably. --max-num-seqs 4 is conservative for a hackathon
     # demo where p95 latency matters more than throughput.
     echo "[serve_vllm] mode=prod — Qwen2.5-VL-72B-Instruct (BF16, single MI300X)"
+    docker rm -f vllm-72b 2>/dev/null || true
     MODEL="Qwen/Qwen2.5-VL-72B-Instruct"
-    "${DOCKER_RUN[@]}" "$IMAGE" \
+    "${DOCKER_RUN[@]}" --name vllm-72b "$IMAGE" \
       "$MODEL" \
         --port 8000 \
         --api-key EMPTY \
         --max-model-len 16384 \
         --max-num-seqs 4 \
-        --gpu-memory-utilization 0.95 \
-        --limit-mm-per-prompt video=0
+        --gpu-memory-utilization 0.95
     ;;
 
   spike)

@@ -123,4 +123,27 @@ For each finding:
 
 ---
 
-_Findings 1–5 captured 2026-05-05 during Day 1 bring-up of Qwen2.5-VL-7B-Instruct on a single MI300X via DO ATL1 + vLLM 0.17.1. More to come as the 72B BF16 prod path lands._
+### 6. `--limit-mm-per-prompt` argument format changed silently between vLLM versions
+
+- **Severity:** nit
+- **Title:** AMD Qwen2.5-VL bring-up examples for ROCm pass `--limit-mm-per-prompt video=0`. On `vllm/vllm-openai-rocm:v0.17.1` this crashes argparse before the engine starts.
+- **Description:** Earlier vLLM examples (and AMD's ROCm Qwen2.5-VL bring-up walkthroughs) use the shorthand `--limit-mm-per-prompt video=0` to disable video on a multimodal model. On v0.17.1 the argument's type is JSON-loaded, and the shorthand crashes:
+  ```
+  vllm serve: error: argument --limit-mm-per-prompt: Value video=0 cannot be converted to <function loads at 0x...>.
+  ```
+  The container exits in <5 seconds and the user has to chase the error to the `argparse` line in `vllm/entrypoints/cli/serve.py`. The fix is either to omit the flag (default is unrestricted, harmless for our workload) or to pass JSON: `--limit-mm-per-prompt '{"video": 0}'`.
+- **Repro steps:**
+  1. Run `docker run … vllm/vllm-openai-rocm:v0.17.1 Qwen/Qwen2.5-VL-7B-Instruct --port 8000 --api-key EMPTY --limit-mm-per-prompt video=0`.
+  2. Container exits within seconds with the argparse error above.
+- **Suggested fix:** Either keep accepting the `key=value` shorthand alongside JSON for backward compatibility (cheap), or — if the JSON migration is intentional — update AMD's published Qwen2.5-VL ROCm bring-up examples and the vLLM error message to suggest the JSON form (`--limit-mm-per-prompt '{"video": 0}'`).
+- **Logs / artifacts:**
+  ```
+  [serve_vllm] mode=prod — Qwen2.5-VL-72B-Instruct (BF16, single MI300X)
+  WARNING 05-05 10:33:08 [gpt_oss_triton_kernels_moe.py:56] Using legacy triton_kernels on ROCm
+  …
+  vllm serve: error: argument --limit-mm-per-prompt: Value video=0 cannot be converted to <function loads at 0x7881cbba2fc0>.
+  ```
+
+---
+
+_Findings 1–6 captured 2026-05-05 during Day 1 / Day 2 bring-up of Qwen2.5-VL-72B-Instruct on a single MI300X via DO ATL1 + vLLM 0.17.1. More to come as benchmarking and real-X-ray demo cases land._
