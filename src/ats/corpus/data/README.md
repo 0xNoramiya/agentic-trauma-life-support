@@ -17,23 +17,23 @@ src/ats/corpus/data/
 
 ## manifest.json format
 
-`scripts/build_index.py` reads `src/ats/corpus/data/raw/manifest.json`, a JSON array of entries:
+`scripts/build_index.py` reads `src/ats/corpus/data/raw/manifest.json`, a JSON array of entries.
+
+**A ready-to-use template lives at [`manifest.json.example`](manifest.json.example)** in this directory. It lists six recommended sources (EAST PMG × 3, ACS TQIP × 1, StatPearls × 2) with the exact filenames you should save the PDFs under. Copy it into `raw/` and rename to `manifest.json`:
+
+```bash
+cp src/ats/corpus/data/manifest.json.example src/ats/corpus/data/raw/manifest.json
+```
+
+Then drop the corresponding PDFs into `src/ats/corpus/data/raw/` with those filenames. Schema for each entry:
 
 ```json
-[
-  {
-    "file": "acs_tqip_best_practices_thoracic_trauma.pdf",
-    "source": "ACS TQIP",
-    "section": "Best Practices in Thoracic Trauma",
-    "url": "https://www.facs.org/quality-programs/trauma/quality/best-practices-guidelines/"
-  },
-  {
-    "file": "east_pmg_pneumothorax.pdf",
-    "source": "EAST PMG",
-    "section": "Pneumothorax",
-    "url": "https://www.east.org/education-resources/practice-management-guidelines"
-  }
-]
+{
+  "file": "east_pmg_pulmonary_contusion_flail_chest.pdf",
+  "source": "EAST PMG",
+  "section": "Pulmonary Contusion / Flail Chest",
+  "url": "https://www.east.org/education-resources/practice-management-guidelines"
+}
 ```
 
 - `file` is relative to the directory the manifest lives in.

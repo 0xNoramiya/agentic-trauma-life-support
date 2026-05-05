@@ -1,0 +1,38 @@
+[
+  {
+    "file": "east_pmg_pulmonary_contusion_flail_chest.pdf",
+    "source": "EAST PMG",
+    "section": "Pulmonary Contusion / Flail Chest",
+    "url": "https://www.east.org/education-resources/practice-management-guidelines"
+  },
+  {
+    "file": "east_pmg_hemothorax.pdf",
+    "source": "EAST PMG",
+    "section": "Hemothorax — Empiric Antibiotics, Tube Thoracostomy, and VATS",
+    "url": "https://www.east.org/education-resources/practice-management-guidelines"
+  },
+  {
+    "file": "east_pmg_rib_fractures_geriatric.pdf",
+    "source": "EAST PMG",
+    "section": "Geriatric Trauma — Rib Fractures",
+    "url": "https://www.east.org/education-resources/practice-management-guidelines"
+  },
+  {
+    "file": "acs_tqip_hemorrhage_control.pdf",
+    "source": "ACS TQIP",
+    "section": "Best Practices Guidelines for Hemorrhage Control",
+    "url": "https://www.facs.org/quality-programs/trauma/quality/best-practices-guidelines/"
+  },
+  {
+    "file": "statpearls_tension_pneumothorax.pdf",
+    "source": "StatPearls",
+    "section": "Tension Pneumothorax",
+    "url": "https://www.ncbi.nlm.nih.gov/books/NBK430685/"
+  },
+  {
+    "file": "statpearls_pulmonary_contusion.pdf",
+    "source": "StatPearls",
+    "section": "Pulmonary Contusion",
+    "url": "https://www.ncbi.nlm.nih.gov/books/NBK430685/"
+  }
+]
