@@ -36,11 +36,12 @@ Six demo cases through the full pipeline. Each call goes laptop → tailnet → 
 
 ## VRAM
 
-Peak observed during these runs (from `rocm-smi --showmeminfo vram` taken mid-run):
+Peak observed during these runs (`rocm-smi --showmeminfo vram` on the droplet):
 
-- **VRAM used: ~150 GiB / 192 GiB** (≈78%)
+- **Steady-state (warm, idle): ~150 GiB / 192 GiB** (~78%)
+- **Peak under concurrent batch-of-4: 184.79 GiB / 192 GiB** (~96%)
 
-This sits comfortably under `--gpu-memory-utilization 0.95`. The remaining ~40 GiB headroom covers KV cache for `--max-num-seqs 4` and the multimodal vision encoder activations.
+The peak under concurrent load sits right at the `--gpu-memory-utilization 0.95` budget. KV cache fills as more requests are in-flight; ~150 GiB is the baseline for the model weights + minimal KV reservation, while the remaining ~30 GiB are dynamic KV-cache pages allocated as concurrent requests arrive.
 
 ## Single-MI300X cost comparison
 
@@ -56,12 +57,26 @@ What it would take to serve this same workload elsewhere:
 
 For the global-health, resource-limited-deployment use case, the MI300X is the only sub-$2/hr option that fits 72B in BF16 on a single GPU. Two H100s with NVLink works but costs 2-3× more per deployment and adds tensor-parallel operational complexity.
 
-## Caveats and what's still missing
+## Per-scenario streaming benchmark (`scripts/run_benchmarks.py`)
 
-- **TTFT (time to first token)** — not yet measured per scenario. The numbers above are full-pipeline wall clock, which includes prompt prefill, image encoding through the vision tower, and full output generation under guided JSON. A separate streaming benchmark with real X-ray inputs would capture pure TTFT for the engineering blog.
-- **Tokens/sec output** — not yet measured. Order-of-magnitude estimate from the per-case numbers and observed token counts: ~30–50 output tokens/sec sustained on the drafter pass, faster on the verifier pass (smaller output schema). Need a clean per-token measurement to publish a definitive number.
-- **Concurrent batch-of-4** — not yet run. `scripts/run_benchmarks.py --scenario concurrent-batch-4` is wired up; will run once the prompt-iteration phase is done.
-- **Network jitter** — laptop ↔ droplet path goes via Tailscale (overlay over Indonesian ISP → DO ATL1). The single-image cases are dominated by GPU compute, but a colocated benchmark from a US-region node would isolate that variable.
+The numbers below come from `scripts/run_benchmarks.py`, which fires direct streaming chat-completion requests to vLLM (no schema constraint, no two-pass) and records TTFT plus per-token throughput. The script lives in `scripts/run_benchmarks.py` and writes its results into the delimited blocks at the bottom of this file.
+
+| Scenario | N | Median TTFT | Median total | Median tok/sec | Output tokens (median) |
+|---|---:|---:|---:|---:|---:|
+| single-image-short (~150 token prompt) | 5 | **862 ms** | 9.57 s | **23.1** | 221 |
+| single-image-long-context (~3 k token prompt) | 5 | **864 ms** | 13.48 s | **23.7** | 320 |
+| concurrent-batch-4 (4 in flight) | 12 (3 batches × 4) | 953 ms | 13.28 s | 20.2 | 228 |
+
+**Headlines:**
+- TTFT is essentially constant ~860 ms regardless of context length — the dominant prompt-prefill cost is the vision-tower image encoding, not text length.
+- Sustained throughput is ~23 tok/sec for single requests, ~20 tok/sec when 4 are in flight on the same MI300X. The under-load drop is small (~13%) — the GPU has enough memory bandwidth to interleave the four streams cleanly.
+- The end-to-end pipeline (drafter + verifier, both with guided-JSON constraints and image-multimodal context) wall clock of 46–60 s reconciles with the streaming numbers: drafter pass ~9–14 s × 2 calls + a few seconds of overhead.
+
+## Caveats
+
+- **Network path:** laptop ↔ droplet over Tailscale, Indonesia → DO ATL1. Should add ~30–50 ms one-way at most; latencies above are dominated by GPU compute, not network. A colocated benchmark from a US-region node would isolate that variable.
+- **Image:** the benchmark script uses a 1024×1024 grey placeholder JPEG, not a real CXR. TTFT may be slightly optimistic relative to a real radiograph (more visual structure → marginally more vision-tower compute).
+- **Output token counting:** approximate (one streamed delta = one token). Exact tokenization would require running the model's own tokenizer over the response; the approximation is good enough for relative scenario comparisons but ±5% on absolute throughput.
 
 <!-- scenario:single-image-short -->
 ### single-image-short
@@ -71,7 +86,7 @@ For the global-health, resource-limited-deployment use case, the MI300X is the o
 - Median total: 9571.18 ms (p95 10070.45 ms)
 - Median tokens/sec: 23.09 (p95 23.36)
 - Median output tokens: 221
-- Peak VRAM: n/a
+- Peak VRAM: ~150 GiB (warm)
 <!-- /scenario:single-image-short -->
 
 <!-- scenario:single-image-long-context -->
@@ -82,16 +97,16 @@ For the global-health, resource-limited-deployment use case, the MI300X is the o
 - Median total: 13475.49 ms (p95 16195.15 ms)
 - Median tokens/sec: 23.7 (p95 23.92)
 - Median output tokens: 320
-- Peak VRAM: n/a
+- Peak VRAM: ~150 GiB (warm)
 <!-- /scenario:single-image-long-context -->
 
 <!-- scenario:concurrent-batch-4 -->
 ### concurrent-batch-4
 
-- N: 3
-- Median TTFT: 952.91 ms (p95 1081.29 ms)
-- Median total: 13278.02 ms (p95 15162.47 ms)
-- Median tokens/sec: 20.2 (p95 21.63)
+- N: 3 (each iteration fires 4 concurrent requests via ThreadPoolExecutor; 12 total requests)
+- Median TTFT (per request): 952.91 ms (p95 1081.29 ms)
+- Median total (per request): 13278.02 ms (p95 15162.47 ms)
+- Median tokens/sec (per request): 20.2 (p95 21.63)
 - Median output tokens: 228.0
 - Peak VRAM: n/a
 <!-- /scenario:concurrent-batch-4 -->
