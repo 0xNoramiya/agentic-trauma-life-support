@@ -19,13 +19,25 @@ src/ats/corpus/data/
 
 `scripts/build_index.py` reads `src/ats/corpus/data/raw/manifest.json`, a JSON array of entries.
 
-**A ready-to-use template lives at [`manifest.json.example`](manifest.json.example)** in this directory. It lists six recommended sources (EAST PMG × 3, ACS TQIP × 1, StatPearls × 2) with the exact filenames you should save the PDFs under. Copy it into `raw/` and rename to `manifest.json`:
+**A ready-to-use template lives at [`manifest.json.example`](manifest.json.example)** in this directory. It lists six chest-trauma-heavy sources (EAST PMG × 3, ACS TQIP × 2, WHO × 1) with the exact filenames + the direct PDF URLs we used during the hackathon (`_download_url` field). Reproduce the corpus with:
 
 ```bash
+mkdir -p src/ats/corpus/data/raw
+# Pull the 6 PDFs (only the URLs in _download_url; other fields are runtime metadata)
+cd src/ats/corpus/data/raw
+curl -L -o east_pmg_pulmonary_contusion_flail_chest.pdf 'https://www.east.org/Content/documents/practicemanagementguidelines/Management_of_pulmonary_contusion_and_flail_chest_.13.pdf'
+curl -L -o east_pmg_hemothorax_occult_pneumothorax.pdf 'https://www.east.org/Content/documents/practicemanagementguidelines/Practice%20Management%20Guidelines%20for%20Management%20of%20Hemothorax%20and%20Occult%20Pneumothorax.pdf'
+curl -L -o east_pmg_blunt_cardiac_injury.pdf 'https://www.east.org/Content/documents/practicemanagementguidelines/Screening_for_blunt_cardiac_injury___An_Eastern.5.pdf'
+curl -L -o acs_tqip_chest_wall_injuries.pdf 'https://www.facs.org/media/qdgliayt/2025_tr_bestpracticesguidelines_chest-wall.pdf'
+curl -L -o acs_tqip_massive_transfusion.pdf 'https://www.facs.org/media/zcjdtrd1/transfusion_guildelines.pdf'
+curl -L -o who_trauma_care_checklist.pdf 'https://hlh.who.int/docs/librariesprovider4/hlh-documents/who-trauma-care-checklist.pdf'
+cd -
+
+# Copy the manifest. The build_index script ignores fields starting with _.
 cp src/ats/corpus/data/manifest.json.example src/ats/corpus/data/raw/manifest.json
 ```
 
-Then drop the corresponding PDFs into `src/ats/corpus/data/raw/` with those filenames. Schema for each entry:
+Total raw: ~17 MB. After ingest, the index is 281 chunks (PyMuPDF text extraction + tiktoken cl100k_base 500-token windows with 50-overlap). Schema for each entry:
 
 ```json
 {

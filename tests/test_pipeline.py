@@ -93,15 +93,33 @@ def test_run_triage_no_verifier_skips_verifier_pass(
     assert "Situation" in res["handoff"]
 
 
-def test_run_triage_retrieved_count_zero_without_index(
+def test_run_triage_retrieved_count_zero_when_index_unavailable(
     mock_client: InferenceClient,
-    mock_settings: Settings,
     synthetic_jpeg_bytes: bytes,
+    monkeypatch,
+    tmp_path: Path,
 ):
-    # No FAISS index built in the test environment; retrieval must return 0.
-    assert not Path(mock_settings.corpus_index_path).exists(), (
-        "Test assumes no FAISS index exists; remove it or run in a clean tree"
+    """Force the retrieval module to think there is no index, then verify
+    run_triage degrades to retrieved_count=0 instead of raising.
+
+    Has to monkeypatch the live retrieval module — pointing at paths that
+    don't exist on disk — because run_triage imports `retrieve` directly
+    and reads the global `settings`. This protects the test from breaking
+    once the user actually builds a real corpus index.
+    """
+    import ats.retrieval.retrieve as retrieve_module
+
+    monkeypatch.setattr(retrieve_module, "_INDEX", None)
+    monkeypatch.setattr(retrieve_module, "_META", None)
+    monkeypatch.setattr(retrieve_module, "_EMBEDDER", None)
+    monkeypatch.setattr(retrieve_module, "_LOAD_ATTEMPTED", False)
+    monkeypatch.setattr(
+        retrieve_module.settings, "corpus_index_path", tmp_path / "no_index.faiss"
     )
+    monkeypatch.setattr(
+        retrieve_module.settings, "corpus_meta_path", tmp_path / "no_meta.jsonl"
+    )
+
     res = run_triage(
         client=mock_client,
         image_bytes=synthetic_jpeg_bytes,

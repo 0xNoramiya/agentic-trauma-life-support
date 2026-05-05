@@ -2,37 +2,43 @@
   {
     "file": "east_pmg_pulmonary_contusion_flail_chest.pdf",
     "source": "EAST PMG",
-    "section": "Pulmonary Contusion / Flail Chest",
-    "url": "https://www.east.org/education-resources/practice-management-guidelines"
+    "section": "Pulmonary Contusion and Flail Chest, Management of",
+    "url": "https://www.east.org/education-resources/practice-management-guidelines/details/pulmonary-contusion-and-flail-chest,-management-of",
+    "_download_url": "https://www.east.org/Content/documents/practicemanagementguidelines/Management_of_pulmonary_contusion_and_flail_chest_.13.pdf"
   },
   {
-    "file": "east_pmg_hemothorax.pdf",
+    "file": "east_pmg_hemothorax_occult_pneumothorax.pdf",
     "source": "EAST PMG",
-    "section": "Hemothorax — Empiric Antibiotics, Tube Thoracostomy, and VATS",
-    "url": "https://www.east.org/education-resources/practice-management-guidelines"
+    "section": "Hemothorax and Occult Pneumothorax, Management of",
+    "url": "https://www.east.org/education-resources/practice-management-guidelines/details/hemothorax-and-occult-pneumothorax,-management-of",
+    "_download_url": "https://www.east.org/Content/documents/practicemanagementguidelines/Practice%20Management%20Guidelines%20for%20Management%20of%20Hemothorax%20and%20Occult%20Pneumothorax.pdf"
   },
   {
-    "file": "east_pmg_rib_fractures_geriatric.pdf",
+    "file": "east_pmg_blunt_cardiac_injury.pdf",
     "source": "EAST PMG",
-    "section": "Geriatric Trauma — Rib Fractures",
-    "url": "https://www.east.org/education-resources/practice-management-guidelines"
+    "section": "Blunt Cardiac Injury, Screening for",
+    "url": "https://www.east.org/education-resources/practice-management-guidelines/details/blunt-cardiac-injury,-screening-for",
+    "_download_url": "https://www.east.org/Content/documents/practicemanagementguidelines/Screening_for_blunt_cardiac_injury___An_Eastern.5.pdf"
   },
   {
-    "file": "acs_tqip_hemorrhage_control.pdf",
+    "file": "acs_tqip_chest_wall_injuries.pdf",
     "source": "ACS TQIP",
-    "section": "Best Practices Guidelines for Hemorrhage Control",
-    "url": "https://www.facs.org/quality-programs/trauma/quality/best-practices-guidelines/"
+    "section": "Best Practices Guidelines — Management of Chest Wall Injuries (Nov 2025)",
+    "url": "https://www.facs.org/quality-programs/trauma/quality/best-practices-guidelines/",
+    "_download_url": "https://www.facs.org/media/qdgliayt/2025_tr_bestpracticesguidelines_chest-wall.pdf"
   },
   {
-    "file": "statpearls_tension_pneumothorax.pdf",
-    "source": "StatPearls",
-    "section": "Tension Pneumothorax",
-    "url": "https://www.ncbi.nlm.nih.gov/books/NBK430685/"
+    "file": "acs_tqip_massive_transfusion.pdf",
+    "source": "ACS TQIP",
+    "section": "Massive Transfusion in Trauma Guidelines",
+    "url": "https://www.facs.org/quality-programs/trauma/quality/best-practices-guidelines/",
+    "_download_url": "https://www.facs.org/media/zcjdtrd1/transfusion_guildelines.pdf"
   },
   {
-    "file": "statpearls_pulmonary_contusion.pdf",
-    "source": "StatPearls",
-    "section": "Pulmonary Contusion",
-    "url": "https://www.ncbi.nlm.nih.gov/books/NBK430685/"
+    "file": "who_trauma_care_checklist.pdf",
+    "source": "WHO",
+    "section": "WHO Trauma Care Checklist",
+    "url": "https://www.who.int/teams/integrated-health-services/clinical-services-and-systems/surgical-care",
+    "_download_url": "https://hlh.who.int/docs/librariesprovider4/hlh-documents/who-trauma-care-checklist.pdf"
   }
 ]
