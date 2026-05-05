@@ -117,13 +117,20 @@ class InferenceClient:
     def health_check(self) -> bool:
         """Return True if the vLLM server is reachable.
 
-        In mock mode this always returns True.
+        In mock mode this always returns True. vLLM's `/v1/models` endpoint
+        requires the same Authorization header as everything else when the
+        server is started with `--api-key`, so we send `Bearer <key>` here
+        — without it vLLM returns 401 and we'd erroneously decide the server
+        is dead.
         """
         if self.mock_mode:
             return True
         try:
             with httpx.Client(timeout=5.0) as http:
-                resp = http.get(f"{self.base_url.rstrip('/')}/models")
+                resp = http.get(
+                    f"{self.base_url.rstrip('/')}/models",
+                    headers={"Authorization": f"Bearer {self.settings.vllm_api_key}"},
+                )
             return resp.status_code == 200
         except (httpx.HTTPError, OSError):
             return False

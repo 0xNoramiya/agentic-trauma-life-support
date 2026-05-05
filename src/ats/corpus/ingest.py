@@ -6,12 +6,18 @@ chunks for an arbitrary downstream embedder.
 
 Chunk size: ~500 tokens, 50-token overlap. Pages with fewer than 50
 extractable tokens are skipped (cover pages, blank pages, image-only pages).
+
+A reference-section filter drops chunks whose text density is dominated by
+year-citation patterns ("J Trauma. 2009;67:14-21." style). The first pass
+of corpus indexing pulled bibliography lines into retrieval and the model
+"cited" them; better to discard these chunks than to surface them.
 """
 
 from __future__ import annotations
 
 import json
 import logging
+import re
 from pathlib import Path
 
 import fitz  # PyMuPDF
@@ -23,7 +29,33 @@ CHUNK_TOKENS = 500
 CHUNK_OVERLAP = 50
 MIN_PAGE_TOKENS = 50
 
+# A chunk is treated as a reference section if it contains more than
+# this many year mentions ("19xx" or "20xx") OR more than this many
+# numbered-list entries that look like bibliography rows.
+MAX_YEARS_PER_CHUNK = 4
+MAX_NUMBERED_ENTRIES_PER_CHUNK = 4
+
+_YEAR_RE = re.compile(r"\b(?:19|20)\d{2}\b")
+_NUMBERED_REF_RE = re.compile(r"^\s*\d+\.\s+\w", re.MULTILINE)
+
 _ENCODING = None
+
+
+def _looks_like_references(text: str) -> bool:
+    """Heuristic: does this chunk look like a bibliography section?
+
+    Triggers on either:
+    - dense year mentions (>4 of "19xx"/"20xx" in a single ~500-token chunk), or
+    - dense numbered list entries that start with "<num>. <Word>..." (>4 in chunk).
+
+    Real prose body text usually contains 0-2 year mentions per chunk and
+    no numbered-list entries; reference sections have one per line.
+    """
+    if len(_YEAR_RE.findall(text)) > MAX_YEARS_PER_CHUNK:
+        return True
+    if len(_NUMBERED_REF_RE.findall(text)) > MAX_NUMBERED_ENTRIES_PER_CHUNK:
+        return True
+    return False
 
 
 def _get_encoding() -> tiktoken.Encoding:
@@ -47,7 +79,7 @@ def _chunk_text(text: str, page: int, source_name: str, url: str | None) -> list
         end = min(start + CHUNK_TOKENS, len(tokens))
         slice_tokens = tokens[start:end]
         chunk_text = enc.decode(slice_tokens).strip()
-        if chunk_text:
+        if chunk_text and not _looks_like_references(chunk_text):
             chunks.append(
                 {
                     "id": f"{source_name}-p{page}-c{chunk_idx}",
