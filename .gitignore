@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# uv
+.venv/
+.python-version
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Data and artifacts
+src/ats/corpus/data/raw/
+src/ats/corpus/data/index.faiss
+src/ats/corpus/data/*.jsonl
+*.pdf
+*.faiss
+
+# Demo assets that aren't licensed for redistribution
+assets/case_*.jpg
+assets/case_*.jpeg
+assets/case_*.png
+docs/demo_outputs/*.json
+!docs/demo_outputs/.gitkeep
+
+# Test/coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
