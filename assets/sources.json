@@ -1,0 +1,59 @@
+{
+  "sources": {
+    "case_06_pediatric_id": {
+      "case_id": "case_06_pediatric_id",
+      "filename": "case_06_pediatric_id.jpg",
+      "openi_uid": "PMC4602871",
+      "title": "Adenovirus pneumonia complicated with acute respiratory distress syndrome: a case report.",
+      "caption": "Changes in lung conditions observed on <b>chest x-rays</b> and computed tomography (CT) scans. (A) <b>Chest x-ray</b> on hospital day 1 showed increased bilateral perihilar infiltrations. (B) <b>Chest x-ray</b> on hospital day 5 showed increased infiltration in the left lung field and whiteout in the right lung field with effusion. (C) CT images on hospital day 5 revealed diffuse infiltration in the right lung field with partial collapse and pleural effusion. (D) Sagittal view of <b>chest</b> CT image showing the same findings as (C). (E) <b>Chest x-ray</b> on hospital day 11 showed a <b>chest</b> tube inserted over the right side and progressively increasing infiltrations in bilateral lung fields. (F) <b>Chest x-ray</b> on hospital day 11 after introducing venoarterial ECMO combined with HFOV. (G) <b>Chest x-ray</b> on hospital day 17 after introducing venovenous ECMO revealed improvements in bilateral lung expansion while under EMCO and HFOV. (H) <b>Chest x-ray</b> on hospital day 20 after removing ECMO showed better lung recruitment with reduced bilateral infiltrations. ECMO = extracorporeal membrane oxygenation, HFOV = high-frequency oscillatory ventilation.",
+      "pmc_url": "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4602871",
+      "openi_query": "pediatric chest X-ray",
+      "fetched_at": "2026-05-05",
+      "license_note": "Sourced via NIH Open-i (https://openi.nlm.nih.gov). License is the parent PMC article's \u2014 most are CC BY; verify before public redistribution."
+    },
+    "case_02_massive_htx": {
+      "case_id": "case_02_massive_htx",
+      "filename": "case_02_massive_htx.jpg",
+      "openi_uid": "PMC4406011",
+      "title": "Massive hemothorax caused by Gelpi retractor during posterior correction surgery for adolescent idiopathic scoliosis: a case report.",
+      "caption": "Postoperative <b>chest radiograph</b>. A <b>chest radiograph</b> taken 18 hours after surgery shows a massive <b>hemothorax</b> in the left lung.",
+      "pmc_url": "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4406011",
+      "openi_query": "hemothorax chest radiograph",
+      "fetched_at": "2026-05-05",
+      "license_note": "Sourced via NIH Open-i (https://openi.nlm.nih.gov). License is the parent PMC article's \u2014 most are CC BY; verify before public redistribution."
+    },
+    "case_03_flail_chest": {
+      "case_id": "case_03_flail_chest",
+      "filename": "case_03_flail_chest.jpg",
+      "openi_uid": "PMC4939179",
+      "title": "Fractured Ribs and the CT Funky Fat Sign of Diaphragmatic Rupture.",
+      "caption": "<b>Fractured rib</b> sign in a 59-year-old man after <b>blunt trauma</b>. (a, b) Contrast-enhanced chest MDCT (axial and coronal planes) shows left 10th-<b>rib fracture</b> abutting the diaphragm (<b>fractured rib</b> sign). The diaphragm appears intact on initial <b>trauma</b> CT. (c, d) Repeat chest MDCT (axial and coronal planes) 5 days later reveals new herniation of omental fat (arrows) into the left hemithorax due to subacute diaphragm rupture. Note discontinuity of the diaphragm (d).",
+      "pmc_url": "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4939179",
+      "openi_query": "rib fracture blunt trauma",
+      "fetched_at": "2026-05-05",
+      "license_note": "Sourced via NIH Open-i (https://openi.nlm.nih.gov). License is the parent PMC article's \u2014 most are CC BY; verify before public redistribution."
+    },
+    "case_04_pulm_contusion": {
+      "case_id": "case_04_pulm_contusion",
+      "filename": "case_04_pulm_contusion.jpg",
+      "openi_uid": "PMC3999368",
+      "title": "Ultrasonography for clinical decision-making and intervention in airway management: from the mouth to the lungs and pleurae.",
+      "caption": "a Consolidation: A diffusely demarcated consolidation (Pnm) with an appearance similar to liver tissue. Air bronchograms (arrowhead) are visible within the consolidation. b <b>Lung</b> consolidation due to <b>pulmonary</b> embolism. A sharply defined hypoechogenic consolidation (PE) without air bronchograms just below the pleural line. c Tumour. Just below a pleural effusion (Ef), a relatively well demarcated tumour (T) can be seen located on the surface and within the <b>lung</b> tissue. d <b>Lung contusion</b>. US image from a patient who had suffered <b>blunt trauma</b> to the left side of the chest. LUS revealed multiple rib fractures and an underlying <b>lung contusion</b> (Lc) just cranially to the spleen (Spl)",
+      "pmc_url": "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3999368",
+      "openi_query": "pulmonary contusion blunt trauma",
+      "fetched_at": "2026-05-05",
+      "license_note": "Sourced via NIH Open-i (https://openi.nlm.nih.gov). License is the parent PMC article's \u2014 most are CC BY; verify before public redistribution."
+    },
+    "case_05_normal_polytrauma": {
+      "case_id": "case_05_normal_polytrauma",
+      "filename": "case_05_normal_polytrauma.jpg",
+      "openi_uid": "PMC3901442",
+      "title": "Common variable immunodeficiency.",
+      "caption": "(A) High-resolution computed tomography (HRCT) scans showing bronchiectasis related to CVID in the context of a <b>normal chest radiograph</b> (not shown). (B) HRCT scans showing granulomatous lymphocytic interstitial lung disease (GLILD) related to CVID in the context of a <b>normal chest radiograph</b> (not shown).",
+      "pmc_url": "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3901442",
+      "openi_query": "normal chest radiograph",
+      "fetched_at": "2026-05-05",
+      "license_note": "Sourced via NIH Open-i (https://openi.nlm.nih.gov). License is the parent PMC article's \u2014 most are CC BY; verify before public redistribution."
+    }
+  }
+}

@@ -3,13 +3,18 @@
 Local development runs in mock mode by default — `generate(...)` returns
 fixture data and the UI / pipeline / tests run end-to-end without a model.
 When `mock_mode=False`, the client uses the OpenAI Python SDK pointed at
-the vLLM server's OpenAI-compatible endpoint, with vLLM's `guided_json`
-extension turned on whenever a Pydantic schema is provided.
+the vLLM server's OpenAI-compatible endpoint with the canonical OpenAI
+`response_format={"type": "json_schema", ...}` form whenever a Pydantic
+schema is provided. (We initially tried vLLM's older
+`extra_body={"guided_json": ...}`; on v0.17.1 the model still wrapped its
+output in a ```json fence and didn't strictly enforce required fields.
+Switching to `response_format` produced clean schema-compliant JSON.)
 """
 
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 import httpx
@@ -20,6 +25,15 @@ from ats.config import Settings
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 SAMPLE_CASE_PATH = REPO_ROOT / "tests" / "fixtures" / "sample_case.json"
+
+# Defense-in-depth: even with response_format=json_schema, some models still
+# wrap output in a markdown JSON fence. Strip if present.
+_FENCE_RE = re.compile(r"^\s*```(?:json)?\s*\n?(.*?)\n?\s*```\s*$", re.DOTALL)
+
+
+def _strip_markdown_fence(s: str) -> str:
+    m = _FENCE_RE.match(s)
+    return m.group(1) if m else s
 
 
 class InferenceClient:
@@ -52,15 +66,13 @@ class InferenceClient:
     ) -> str:
         """Send a chat-completion request and return the message content as a string.
 
-        When `response_schema` is provided, vLLM's `guided_json` extension is
-        used so the server constrains decoding to the schema.
+        When `response_schema` is provided, the OpenAI-canonical
+        `response_format={"type": "json_schema", "json_schema": {...}}` form
+        is used so the server constrains decoding to the schema. Markdown
+        ```json fences are stripped from the response just in case.
         """
         if self.mock_mode:
             return self._mock_generate(response_schema)
-
-        extra_body: dict | None = None
-        if response_schema is not None:
-            extra_body = {"guided_json": response_schema.model_json_schema()}
 
         kwargs: dict = {
             "model": self.model_name,
@@ -68,12 +80,19 @@ class InferenceClient:
             "max_tokens": max_tokens,
             "temperature": temperature,
         }
-        if extra_body is not None:
-            kwargs["extra_body"] = extra_body
+        if response_schema is not None:
+            kwargs["response_format"] = {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": response_schema.__name__,
+                    "schema": response_schema.model_json_schema(),
+                    "strict": True,
+                },
+            }
 
         response = self.client.chat.completions.create(**kwargs)
         content = response.choices[0].message.content
-        return content if content is not None else ""
+        return _strip_markdown_fence(content) if content is not None else ""
 
     def _mock_generate(self, response_schema: type[BaseModel] | None) -> str:
         """Return canned data shaped to the requested schema."""
