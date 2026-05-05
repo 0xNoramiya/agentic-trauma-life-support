@@ -3,67 +3,54 @@
   "patient_brief": {
     "age": 34,
     "sex": "M",
-    "mechanism": "ejected from MVC at highway speed"
+    "mechanism": "ejected from MVC at highway speed, prominent abdominal seatbelt sign, mild abdominal tenderness. Polytrauma evaluation in progress; chest cleared clinically and radiographically."
   },
   "primary_survey": {
     "A_airway": {
       "concern_level": "low",
       "imaging_findings": [],
       "actions_required": [
-        "Maintain airway patency with cervical spine precautions.",
-        "Consider advanced airway if GCS declines."
+        "Maintain airway patency and prepare for advanced airway management if necessary.",
+        "Monitor for signs of airway compromise."
       ]
     },
     "B_breathing": {
-      "concern_level": "moderate",
+      "concern_level": "low",
       "rr": null,
       "spo2": null,
-      "imaging_findings": [
-        {
-          "finding": "diffuse pulmonary opacities",
-          "laterality": "bilateral",
-          "severity": "moderate",
-          "citation_id": null
-        }
-      ],
+      "imaging_findings": [],
       "actions_required": [
-        "Supplemental oxygen to maintain SpO2 > 94%",
-        "Consider repeat CXR or CT chest if respiratory status deteriorates."
+        "Perform supplemental oxygen therapy to maintain SpO2 >94%.",
+        "Consider non-invasive ventilation if there are signs of respiratory distress."
       ]
     },
     "C_circulation": {
-      "concern_level": "critical",
+      "concern_level": "high",
       "hr": null,
       "sbp": null,
       "dbp": null,
-      "imaging_findings": [
-        {
-          "finding": "diffuse pulmonary opacities",
-          "laterality": "bilateral",
-          "severity": "moderate",
-          "citation_id": null
-        }
-      ],
+      "imaging_findings": [],
       "actions_required": [
-        "Initiate large-bore IV access and administer crystalloid bolus.",
+        "Initiate large-bore IV access and administer crystalloid fluids.",
         "Perform focused assessment with sonography for trauma (FAST) exam now.",
-        "Consider CT abdomen/pelvis now if FAST positive or hemodynamically unstable."
+        "Prepare for potential laparotomy due to concern for intra-abdominal hemorrhage.",
+        "Obtain CT abdomen/pelvis now."
       ]
     },
     "D_disability": {
       "concern_level": "low",
       "gcs": 15,
       "actions_required": [
-        "Repeat neurologic exam q15min.",
-        "Consider head CT if GCS declines."
+        "Continue neurologic monitoring.",
+        "Assess for potential spinal cord injury and immobilize spine if indicated."
       ]
     },
     "E_exposure": {
-      "concern_level": "moderate",
-      "temp": null,
+      "concern_level": "low",
+      "temp": 36.5,
       "actions_required": [
-        "Fully expose patient for complete physical exam.",
-        "Assess for additional injuries including extremities and spine."
+        "Ensure full-body exposure and inspection for additional injuries.",
+        "Maintain normothermia."
       ]
     }
   },
@@ -72,47 +59,53 @@
     "recommended_actions": [
       {
         "action": "Perform FAST exam now.",
-        "rationale": "Abdominal seatbelt sign and mild abdominal tenderness raise concern for intra-abdominal injury.",
+        "rationale": "Given the patient's hemodynamic instability and abdominal seatbelt sign, there is a high suspicion for intra-abdominal hemorrhage which needs to be ruled out urgently.",
         "urgency": "now",
         "citation_id": null
       },
       {
-        "action": "Order CT abdomen/pelvis now.",
-        "rationale": "Hypotension and tachycardia suggest potential intra-abdominal or pelvic hemorrhage.",
+        "action": "Obtain CT abdomen/pelvis now.",
+        "rationale": "To further evaluate for sources of bleeding and guide surgical intervention if necessary.",
         "urgency": "now",
         "citation_id": null
       }
     ],
     "escalation": {
       "who": "Trauma surgeon",
-      "when": "<5min"
+      "when": "now"
     },
     "additional_imaging": [],
     "labs": []
   },
   "red_flags": [
     {
-      "flag": "Hypotension with tachycardia",
+      "flag": "Hemodynamic instability with unremarkable chest X-ray",
       "evidence": [
-        "BP 102/64",
-        "HR 118"
+        "BP 102/64, HR 118",
+        "Clean chest X-ray"
       ],
-      "immediate_action": "Initiate resuscitation and consider FAST/CT abdomen/pelvis now."
+      "immediate_action": "Perform FAST exam now."
     }
   ],
-  "citations": [],
+  "citations": [
+    {
+      "id": "EAST PMG-p5-c0",
+      "source": "EAST PMG — page 5",
+      "section": "Management of Massive Hemothorax",
+      "quote": "Patient physiology should be the primary indications for surgical intervention rather than absolute numbers of initial or persistent output (Level 2).",
+      "url": null
+    }
+  ],
   "model_metadata": {
     "model": "ATLS_Triage_v1.0",
     "confidence": "moderate",
     "limitations": [
-      "CT images provided, but analysis limited to chest findings only."
+      "Single AP view, no lateral",
+      "Image quality limits assessment of the right costophrenic angle."
     ],
-    "disclaimer": "This output is for clinical decision support only and does not constitute a medical diagnosis. It should not be used for unsupervised clinical care.",
+    "disclaimer": "This output is for decision support only and should not be used as a definitive diagnosis or for unsupervised clinical use.",
     "verifier_notes": [
-      "The draft incorrectly states there are no imaging findings for breathing despite the presence of diffuse pulmonary opacities on CT. These findings should be included.",
-      "The draft incorrectly states there are no imaging findings for circulation despite the presence of diffuse pulmonary opacities on CT. These findings should be included.",
-      "The draft incorrectly sets the breathing concern level to low despite the presence of diffuse pulmonary opacities on CT. This should be upgraded to moderate.",
-      "The draft incorrectly sets the circulation concern level to high despite the presence of diffuse pulmonary opacities on CT. This should be upgraded to critical."
+      "The chest X-ray appears unremarkable, consistent with the draft's findings. However, the draft correctly focuses on the concerning abdominal signs and hemodynamic instability, suggesting appropriate next steps."
     ]
   }
 }

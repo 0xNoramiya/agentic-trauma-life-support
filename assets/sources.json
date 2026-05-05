@@ -47,13 +47,12 @@
     "case_05_normal_polytrauma": {
       "case_id": "case_05_normal_polytrauma",
       "filename": "case_05_normal_polytrauma.jpg",
-      "openi_uid": "PMC3901442",
-      "title": "Common variable immunodeficiency.",
-      "caption": "(A) High-resolution computed tomography (HRCT) scans showing bronchiectasis related to CVID in the context of a <b>normal chest radiograph</b> (not shown). (B) HRCT scans showing granulomatous lymphocytic interstitial lung disease (GLILD) related to CVID in the context of a <b>normal chest radiograph</b> (not shown).",
-      "pmc_url": "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3901442",
-      "openi_query": "normal chest radiograph",
+      "source_origin": "Wikimedia Commons",
+      "title": "Normal posteroanterior (PA) chest radiograph (X-ray)",
+      "caption": "Normal adult posteroanterior chest radiograph, 1929x2207, no acute findings.",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Normal_posteroanterior_(PA)_chest_radiograph_(X-ray).jpg",
       "fetched_at": "2026-05-05",
-      "license_note": "Sourced via NIH Open-i (https://openi.nlm.nih.gov). License is the parent PMC article's \u2014 most are CC BY; verify before public redistribution."
+      "license_note": "Wikimedia Commons file. Check the file page for the specific license (CC BY-SA / CC0 / etc.) before public redistribution. The image itself is not committed."
     }
   }
 }
