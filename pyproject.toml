@@ -43,6 +43,9 @@ select = ["E", "F", "I", "B", "UP"]
 # The example output JSON literal in examples.py has long quote lines for
 # the same reason.
 "src/ats/prompts/examples.py" = ["E501"]
+# The HF Space vendors src/ats/{schema,prompts,render}/* into space/ats/.
+# Same E501 / format conventions as the originals.
+"space/ats/**/*.py" = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

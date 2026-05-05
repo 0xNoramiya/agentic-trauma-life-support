@@ -1,0 +1,6 @@
+# HF Space-side gitignore. Keep minimal; HF auto-picks the Python version.
+__pycache__/
+*.py[cod]
+.venv/
+.gradio/
+flagged/
