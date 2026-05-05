@@ -1,0 +1,85 @@
+{
+  "case_id": "case_bad_consistency",
+  "patient_brief": {
+    "age": 45,
+    "sex": "M",
+    "mechanism": "fall 5m onto rebar"
+  },
+  "primary_survey": {
+    "A_airway": {
+      "concern_level": "low",
+      "imaging_findings": [],
+      "actions_required": []
+    },
+    "B_breathing": {
+      "concern_level": "high",
+      "rr": 28,
+      "spo2": 92,
+      "imaging_findings": [
+        {
+          "finding": "pneumothorax",
+          "laterality": "n/a",
+          "severity": "moderate",
+          "citation_id": null
+        }
+      ],
+      "actions_required": [
+        "supplemental oxygen"
+      ]
+    },
+    "C_circulation": {
+      "concern_level": "critical",
+      "hr": 88,
+      "sbp": 132,
+      "dbp": 84,
+      "imaging_findings": [],
+      "actions_required": [
+        "large-bore IV access (claims class III shock with normal BP)"
+      ]
+    },
+    "D_disability": {
+      "concern_level": "low",
+      "gcs": 15,
+      "actions_required": []
+    },
+    "E_exposure": {
+      "concern_level": "low",
+      "temp": 36.6,
+      "actions_required": []
+    }
+  },
+  "disposition": {
+    "priority": "immediate",
+    "recommended_actions": [
+      {
+        "action": "place chest tube",
+        "rationale": "treat the pneumothorax",
+        "urgency": "<1hr",
+        "citation_id": null
+      }
+    ],
+    "escalation": {
+      "who": "trauma surgery",
+      "when": "<15min"
+    },
+    "additional_imaging": [],
+    "labs": []
+  },
+  "red_flags": [
+    {
+      "flag": "class III shock",
+      "evidence": [],
+      "immediate_action": "blood resuscitation"
+    }
+  ],
+  "citations": [],
+  "model_metadata": {
+    "model": "Qwen/Qwen2.5-VL-72B-Instruct",
+    "confidence": "moderate",
+    "limitations": [
+      "synthetic fixture for verifier testing"
+    ],
+    "disclaimer": "Decision support only. Not a diagnosis.",
+    "verifier_notes": []
+  }
+}

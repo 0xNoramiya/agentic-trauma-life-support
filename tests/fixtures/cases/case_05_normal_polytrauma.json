@@ -1,0 +1,14 @@
+{
+  "case_id": "case_05_normal_polytrauma",
+  "mechanism": "ejected from a motor vehicle, abdominal seatbelt sign",
+  "source": "NIH ChestX-ray14 — 'No Finding' label",
+  "vitals": {"rr": 22, "spo2": 97, "hr": 118, "sbp": 102, "dbp": 64, "gcs": 15, "temp": 36.5},
+  "expected_findings": [
+    "chest radiograph unremarkable",
+    "no pneumothorax, no hemothorax, no widened mediastinum",
+    "tachycardia and relative hypotension despite a normal CXR"
+  ],
+  "expected_priority": "urgent",
+  "language": "en",
+  "clinical_vignette": "34M ejected from MVC at highway speed, prominent abdominal seatbelt sign, mild abdominal tenderness. Polytrauma evaluation in progress; chest cleared clinically and radiographically. THE CREDIBILITY CASE — model must NOT invent chest pathology and should escalate to abdominal imaging and FAST."
+}

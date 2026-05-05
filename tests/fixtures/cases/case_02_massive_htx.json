@@ -1,0 +1,14 @@
+{
+  "case_id": "case_02_massive_htx",
+  "mechanism": "fall 5m onto rebar",
+  "source": "Radiopaedia — massive hemothorax (open teaching case)",
+  "vitals": {"rr": 28, "spo2": 92, "hr": 132, "sbp": 78, "dbp": 42, "gcs": 14, "temp": 36.1},
+  "expected_findings": [
+    "massive right hemothorax",
+    "complete opacification of the right hemithorax",
+    "mediastinal shift away from the affected side"
+  ],
+  "expected_priority": "immediate",
+  "language": "en",
+  "clinical_vignette": "45M industrial fall, impaled briefly on rebar. Hypotensive, tachycardic, dull to percussion on the right."
+}

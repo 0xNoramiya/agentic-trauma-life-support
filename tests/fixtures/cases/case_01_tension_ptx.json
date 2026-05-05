@@ -1,0 +1,14 @@
+{
+  "case_id": "case_01_tension_ptx",
+  "mechanism": "motorbike vs car, ejected",
+  "source": "Radiopaedia — tension pneumothorax (open teaching case)",
+  "vitals": {"rr": 32, "spo2": 88, "hr": 124, "sbp": 92, "dbp": 60, "gcs": 14, "temp": 36.4},
+  "expected_findings": [
+    "left tension pneumothorax",
+    "tracheal deviation to the right",
+    "decreased left-sided lung volume"
+  ],
+  "expected_priority": "immediate",
+  "language": "en",
+  "clinical_vignette": "30M motorbike vs car, thrown approximately 6 meters. Decreased breath sounds on the left, JVD, tracheal deviation right."
+}

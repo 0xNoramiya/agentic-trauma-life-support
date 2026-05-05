@@ -1,0 +1,14 @@
+{
+  "case_id": "case_06_pediatric_id",
+  "mechanism": "kecelakaan lalu lintas, motor vs mobil, terlempar 3 meter",
+  "source": "Radiopaedia — pediatric pulmonary contusion (open teaching case)",
+  "vitals": {"rr": 35, "spo2": 91, "hr": 130, "sbp": 90, "dbp": 60, "gcs": 14, "temp": 36.8},
+  "expected_findings": [
+    "kontusio paru kanan",
+    "tidak ada pneumotoraks",
+    "tidak ada fraktur iga yang jelas pada proyeksi ini"
+  ],
+  "expected_priority": "urgent",
+  "language": "id",
+  "clinical_vignette": "Anak laki-laki 8 tahun, kecelakaan lalu lintas (motor vs mobil), terlempar 3 meter. Takipneu, retraksi ringan, suara napas menurun di hemithoraks kanan. Output keseluruhan harus dalam Bahasa Indonesia."
+}

@@ -1,0 +1,14 @@
+{
+  "case_id": "case_04_pulm_contusion",
+  "mechanism": "crushed by collapsing scaffolding, brief loss of consciousness",
+  "source": "Radiopaedia — pulmonary contusion (open teaching case)",
+  "vitals": {"rr": 24, "spo2": 93, "hr": 102, "sbp": 124, "dbp": 76, "gcs": 14, "temp": 36.7},
+  "expected_findings": [
+    "patchy non-segmental opacities, predominantly right",
+    "no pneumothorax",
+    "no rib fractures appreciated on this view"
+  ],
+  "expected_priority": "urgent",
+  "language": "en",
+  "clinical_vignette": "22M crushed by scaffolding, brief LOC at scene. On 4 L NC, mildly tachypneic, no obvious external chest deformity."
+}

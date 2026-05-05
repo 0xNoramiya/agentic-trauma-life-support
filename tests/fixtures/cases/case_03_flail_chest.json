@@ -1,0 +1,14 @@
+{
+  "case_id": "case_03_flail_chest",
+  "mechanism": "head-on motor vehicle collision, restrained driver",
+  "source": "Radiopaedia — flail chest (open teaching case)",
+  "vitals": {"rr": 26, "spo2": 90, "hr": 108, "sbp": 138, "dbp": 82, "gcs": 15, "temp": 36.6},
+  "expected_findings": [
+    "multiple right-sided segmental rib fractures",
+    "underlying pulmonary contusion",
+    "paradoxical chest wall motion on exam"
+  ],
+  "expected_priority": "urgent",
+  "language": "en",
+  "clinical_vignette": "67F restrained driver in head-on MVC at ~80 km/h. Splinting respirations, paradoxical motion of the right anterior chest wall."
+}
