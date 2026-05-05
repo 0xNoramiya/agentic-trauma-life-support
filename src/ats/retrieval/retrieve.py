@@ -9,7 +9,6 @@ pipeline degrades gracefully.
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 import faiss
 
@@ -19,13 +18,13 @@ from ats.retrieval.index import load_index
 
 logger = logging.getLogger(__name__)
 
-_INDEX: Optional[faiss.Index] = None
-_META: Optional[list[dict]] = None
-_EMBEDDER: Optional[Embedder] = None
+_INDEX: faiss.Index | None = None
+_META: list[dict] | None = None
+_EMBEDDER: Embedder | None = None
 _LOAD_ATTEMPTED = False
 
 
-def _get_index() -> tuple[Optional[faiss.Index], Optional[list[dict]], Optional[Embedder]]:
+def _get_index() -> tuple[faiss.Index | None, list[dict] | None, Embedder | None]:
     """Lazy-load and cache the FAISS index, metadata, and embedder."""
     global _INDEX, _META, _EMBEDDER, _LOAD_ATTEMPTED
 
@@ -82,7 +81,7 @@ def retrieve(query: str, k: int = 5) -> list[dict]:
     scores, indices = index.search(vec, k_eff)
 
     results: list[dict] = []
-    for score, idx in zip(scores[0].tolist(), indices[0].tolist()):
+    for score, idx in zip(scores[0].tolist(), indices[0].tolist(), strict=False):
         if idx < 0 or idx >= len(meta):
             continue
         row = meta[idx]

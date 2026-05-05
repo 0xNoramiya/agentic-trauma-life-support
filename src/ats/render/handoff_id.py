@@ -132,9 +132,7 @@ def render_id(draft: TriageOutput) -> str:
 
     if draft.disposition.additional_imaging:
         lines.append("")
-        lines.append(
-            "**Pencitraan tambahan:** " + ", ".join(draft.disposition.additional_imaging)
-        )
+        lines.append("**Pencitraan tambahan:** " + ", ".join(draft.disposition.additional_imaging))
     if draft.disposition.labs:
         lines.append("**Laboratorium:** " + ", ".join(draft.disposition.labs))
     lines.append("")

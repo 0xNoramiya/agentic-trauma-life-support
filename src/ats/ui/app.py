@@ -70,7 +70,7 @@ def _make_handler(client: InferenceClient):
             return (
                 f"**Error during triage:** `{exc}`",
                 "{}",
-                f"Retrieved chunks: 0 (error)",
+                "Retrieved chunks: 0 (error)",
             )
 
         return (
@@ -100,9 +100,7 @@ def build_ui(client: InferenceClient | None = None) -> gr.Blocks:
 
     with gr.Blocks(title="ATLS — Agentic Trauma Life Support") as demo:
         gr.Markdown("# Agentic Trauma Life Support (ATLS)")
-        gr.Markdown(
-            "Decision support only. Not a diagnosis. Not for unsupervised clinical use."
-        )
+        gr.Markdown("Decision support only. Not a diagnosis. Not for unsupervised clinical use.")
         gr.Markdown(_health_indicator(client))
 
         with gr.Row():

@@ -114,7 +114,7 @@ def verify(
         return draft
 
     if verifier_out.verifier_notes:
-        patched.model_metadata.verifier_notes = (
-            list(patched.model_metadata.verifier_notes) + list(verifier_out.verifier_notes)
+        patched.model_metadata.verifier_notes = list(patched.model_metadata.verifier_notes) + list(
+            verifier_out.verifier_notes
         )
     return patched

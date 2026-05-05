@@ -90,19 +90,26 @@ def main() -> int:
         help="Override language. Defaults to the case's language field.",
     )
     parser.add_argument(
-        "--verifier", dest="verifier", action="store_true", default=True,
+        "--verifier",
+        dest="verifier",
+        action="store_true",
+        default=True,
         help="Run the verifier pass (default).",
     )
     parser.add_argument(
-        "--no-verifier", dest="verifier", action="store_false",
+        "--no-verifier",
+        dest="verifier",
+        action="store_false",
         help="Skip the verifier pass.",
     )
     parser.add_argument(
-        "--show-citations", action="store_true",
+        "--show-citations",
+        action="store_true",
         help="Print only the citations section of the result.",
     )
     parser.add_argument(
-        "--show-json", action="store_true",
+        "--show-json",
+        action="store_true",
         help="Also print the full TriageOutput JSON.",
     )
     args = parser.parse_args()
@@ -132,7 +139,7 @@ def main() -> int:
     if args.show_citations:
         for c in result["json"].get("citations", []):
             url = f" {c['url']}" if c.get("url") else ""
-            print(f"[{c['id']}] {c['source']}, {c['section']}: \"{c['quote']}\"{url}")
+            print(f'[{c["id"]}] {c["source"]}, {c["section"]}: "{c["quote"]}"{url}')
     else:
         print(result["handoff"])
 

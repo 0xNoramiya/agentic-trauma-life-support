@@ -67,7 +67,5 @@ def load_index(path: Path, meta_path: Path) -> tuple[faiss.Index, list[dict]]:
                 continue
             meta.append(json.loads(line))
     if index.ntotal != len(meta):
-        raise RuntimeError(
-            f"Index size {index.ntotal} does not match metadata length {len(meta)}"
-        )
+        raise RuntimeError(f"Index size {index.ntotal} does not match metadata length {len(meta)}")
     return index, meta

@@ -12,7 +12,7 @@ import shutil
 import statistics
 import subprocess
 import time
-from typing import Iterable
+from collections.abc import Iterable
 
 from ats.inference.client import InferenceClient
 
@@ -27,9 +27,7 @@ def time_completion(
     Returns a dict with keys: ttft_ms, total_ms, output_tokens, tokens_per_sec.
     """
     if client.mock_mode:
-        raise RuntimeError(
-            "time_completion requires a real vLLM server. Set MOCK_MODE=false."
-        )
+        raise RuntimeError("time_completion requires a real vLLM server. Set MOCK_MODE=false.")
 
     start = time.perf_counter()
     first_token_at: float | None = None

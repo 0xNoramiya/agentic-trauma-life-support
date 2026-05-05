@@ -47,17 +47,17 @@ SHORT_VITALS = (
 
 LONG_CONTEXT_EXTRA = "\n\n".join(
     [
-        "[atls-c1-001] ACS ATLS — Chapter 1: \"Tension pneumothorax is a clinical diagnosis. "
+        '[atls-c1-001] ACS ATLS — Chapter 1: "Tension pneumothorax is a clinical diagnosis. '
         "Treatment must not be delayed for radiographic confirmation. Immediate decompression of "
-        "the affected hemithorax is required.\"",
-        "[east-ptx-002] EAST PMG — Pneumothorax: \"Tube thoracostomy is recommended after "
-        "needle decompression for confirmed pneumothorax in the trauma patient.\"",
-        "[acs-tqip-thoracic-001] ACS TQIP — Best Practices Thoracic Trauma: \"Initial fluid "
-        "resuscitation in hemorrhagic shock should prioritize blood products over crystalloid.\"",
-        "[east-rib-001] EAST PMG — Rib Fractures: \"Multimodal analgesia is recommended; "
-        "consider regional analgesia in patients with three or more rib fractures.\"",
-        "[who-imeesc-001] WHO IMEESC: \"In resource-limited settings, surgical airway equipment "
-        "should be immediately available wherever advanced airway is attempted.\"",
+        'the affected hemithorax is required."',
+        '[east-ptx-002] EAST PMG — Pneumothorax: "Tube thoracostomy is recommended after '
+        'needle decompression for confirmed pneumothorax in the trauma patient."',
+        '[acs-tqip-thoracic-001] ACS TQIP — Best Practices Thoracic Trauma: "Initial fluid '
+        'resuscitation in hemorrhagic shock should prioritize blood products over crystalloid."',
+        '[east-rib-001] EAST PMG — Rib Fractures: "Multimodal analgesia is recommended; '
+        'consider regional analgesia in patients with three or more rib fractures."',
+        '[who-imeesc-001] WHO IMEESC: "In resource-limited settings, surgical airway equipment '
+        'should be immediately available wherever advanced airway is attempted."',
     ]
 )
 
@@ -144,8 +144,7 @@ def _format_markdown(scenario: str, n: int, samples: list[dict], vram_gb: float 
         "",
         f"- N: {n}",
         f"- Median TTFT: {summary['ttft_ms']['median']} ms (p95 {summary['ttft_ms']['p95']} ms)",
-        f"- Median total: {summary['total_ms']['median']} ms"
-        f" (p95 {summary['total_ms']['p95']} ms)",
+        f"- Median total: {summary['total_ms']['median']} ms (p95 {summary['total_ms']['p95']} ms)",
         f"- Median tokens/sec: {summary['tokens_per_sec']['median']}"
         f" (p95 {summary['tokens_per_sec']['p95']})",
         f"- Median output tokens: {summary['output_tokens']['median']}",

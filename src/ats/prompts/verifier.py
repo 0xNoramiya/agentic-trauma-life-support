@@ -20,6 +20,8 @@ Your job is to identify internal inconsistencies and clinical safety issues in t
 - A finding such as 'pneumothorax' or 'hemothorax' with laterality 'n/a' (these always have a side; pick one based on the image, or downgrade the finding).
 - A claim of class III / class IV shock when blood pressure is normal, or vice versa.
 - A finding that has no supporting imaging features the X-ray could plausibly show (hallucinated finding).
+- **The case-05 pattern: a 'mild' chest finding that exists primarily to justify shock-level vitals.** When the X-ray looks unremarkable but vitals are concerning (low BP, tachycardia, mechanism of polytrauma), the model is tempted to invent a small contusion / subtle pneumothorax to "explain" the shock. The shock is from a non-thoracic source. If you see a `severity: mild` finding paired with concerning C_circulation vitals and no obvious imaging features, prefer to patch `imaging_findings` to `[]`, downgrade B_breathing.concern_level to `moderate` or `low`, and add a verifier note recommending CT abdomen/pelvis + FAST.
+- B_breathing.concern_level set to `critical` when imaging_findings is empty AND SpO2 is adequate. Concern level should reflect the chest specifically, not the patient's overall status. Patch it down.
 - A red flag without concrete evidence in `evidence`.
 - A recommended action with an urgency that does not match the priority (e.g. priority 'immediate' but every action is '<1hr').
 - Missing or trivially-empty `model_metadata.limitations`.

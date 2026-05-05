@@ -28,9 +28,7 @@ def _format_retrieved(chunks: list[dict]) -> str:
         quote = (c.get("text") or "").strip().replace("\n", " ")
         if len(quote) > MAX_QUOTE_CHARS:
             quote = quote[: MAX_QUOTE_CHARS - 1].rstrip() + "…"
-        lines.append(
-            f"[{c['id']}] {c['source']} — {c['section']}: \"{quote}\""
-        )
+        lines.append(f'[{c["id"]}] {c["source"]} — {c["section"]}: "{quote}"')
     return "\n".join(lines)
 
 

@@ -7,7 +7,8 @@ import logging
 from typing import Any
 
 from ats.inference.client import InferenceClient
-from ats.pipeline.drafter import DrafterValidationError, draft as drafter_draft
+from ats.pipeline.drafter import DrafterValidationError
+from ats.pipeline.drafter import draft as drafter_draft
 from ats.pipeline.verifier import verify as verifier_verify
 from ats.render.handoff_en import render_en
 from ats.render.handoff_id import render_id
