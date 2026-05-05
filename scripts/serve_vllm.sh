@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# serve_vllm.sh — launch vLLM on a single AMD MI300X via the rocm/vllm-dev:nightly container.
+# serve_vllm.sh — launch vLLM on a single AMD MI300X.
 #
 # Usage:
 #   ./scripts/serve_vllm.sh dev     # 7B for fast iteration / HF Space deploy
@@ -10,7 +10,11 @@
 #
 # Required on the host:
 #   - Docker with --device=/dev/kfd --device=/dev/dri (ROCm passthrough).
-#   - HuggingFace cache mounted at /root/.cache/huggingface.
+#   - HuggingFace cache mounted at /root/.cache/huggingface, with a valid
+#     read token at /root/.cache/huggingface/token (chmod 600).
+#   - Port 8000 free. The DigitalOcean ROCm Quick Start image launches a
+#     JupyterLab container called `rocm` that grabs :8000 on boot — kill it:
+#       docker stop rocm && docker rm rocm
 #
 # Override the mode via the first arg or the MODE env var. Default: dev.
 
@@ -18,22 +22,31 @@ set -euo pipefail
 
 MODE="${1:-${MODE:-dev}}"
 
+# ---- Container image --------------------------------------------------------
+# vllm/vllm-openai-rocm:v0.17.1 is the official ROCm-side OpenAI-API server.
+# Entrypoint is `vllm serve`, so docker args become positional/flag args to
+# `vllm serve` directly (no `vllm serve` prefix). The DigitalOcean ROCm Quick
+# Start image v7.2.0 ships this image already pulled — saves ~30 min vs.
+# `rocm/vllm-dev:nightly`. Pin to v0.17.1 for reproducibility.
+IMAGE="vllm/vllm-openai-rocm:v0.17.1"
+
 # ---- Common flags shared across all modes -----------------------------------
 # vLLM ROCm tuning toggles, all set via env into the container:
 #   VLLM_ROCM_USE_AITER=1       — use AITER kernels (fastest path on MI300X).
 #   VLLM_ROCM_USE_AITER_MHA=1   — multi-head attention via AITER.
 #   SAFETENSORS_FAST_GPU=1      — direct safetensors->GPU load, faster bring-up.
 #   MIOPEN_FIND_MODE=FAST       — skip exhaustive autotune to cut cold start.
+#   HF_HOME                     — model cache location inside the container.
+#   HF_TOKEN                    — sourced from /root/.cache/huggingface/token
+#                                 so gated repos (Qwen) download cleanly.
 COMMON_ENV=(
   -e "VLLM_ROCM_USE_AITER=1"
   -e "VLLM_ROCM_USE_AITER_MHA=1"
   -e "SAFETENSORS_FAST_GPU=1"
   -e "MIOPEN_FIND_MODE=FAST"
   -e "HF_HOME=/root/.cache/huggingface"
+  -e "HF_TOKEN=$(cat "${HF_TOKEN_FILE:-$HOME/.cache/huggingface/token}" 2>/dev/null || true)"
 )
-
-# Container image — ROCm vLLM nightly. Pin a digest for the demo run.
-IMAGE="rocm/vllm-dev:nightly"
 
 # Docker run prelude with ROCm device passthrough.
 DOCKER_RUN=(
@@ -49,20 +62,26 @@ DOCKER_RUN=(
   "${COMMON_ENV[@]}"
 )
 
+# Note on flags: --trust-remote-code is accepted but ignored by v0.17.1
+# (it's only relevant for HF Auto* classes, not vLLM's own loaders), so we
+# omit it. --limit-mm-per-prompt video=0 keeps the multimodal slot reserved
+# for images only — we never feed video.
+
 case "$MODE" in
   dev)
     # ---- Dev iteration: Qwen2.5-VL-7B-Instruct -----------------------------
     # Goal: fast iteration, low VRAM. Also the HF Space deployment target.
+    # First-run AITER JIT compile takes ~10-15 min before /v1/models becomes
+    # ready; subsequent starts hit the JIT cache and warm in ~2 min.
     echo "[serve_vllm] mode=dev — Qwen2.5-VL-7B-Instruct"
     MODEL="Qwen/Qwen2.5-VL-7B-Instruct"
     "${DOCKER_RUN[@]}" "$IMAGE" \
-      vllm serve "$MODEL" \
+      "$MODEL" \
         --port 8000 \
         --api-key EMPTY \
         --max-model-len 8192 \
         --max-num-seqs 8 \
         --gpu-memory-utilization 0.85 \
-        --trust-remote-code \
         --limit-mm-per-prompt video=0
     ;;
 
@@ -75,13 +94,12 @@ case "$MODE" in
     echo "[serve_vllm] mode=prod — Qwen2.5-VL-72B-Instruct (BF16, single MI300X)"
     MODEL="Qwen/Qwen2.5-VL-72B-Instruct"
     "${DOCKER_RUN[@]}" "$IMAGE" \
-      vllm serve "$MODEL" \
+      "$MODEL" \
         --port 8000 \
         --api-key EMPTY \
         --max-model-len 16384 \
         --max-num-seqs 4 \
         --gpu-memory-utilization 0.95 \
-        --trust-remote-code \
         --limit-mm-per-prompt video=0
     ;;
 

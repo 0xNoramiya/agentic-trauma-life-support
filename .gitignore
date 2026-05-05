@@ -63,3 +63,6 @@ coverage.xml
 
 # Logs
 *.log
+
+# Claude Code local working dir
+.claude/

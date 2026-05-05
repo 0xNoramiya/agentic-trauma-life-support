@@ -86,3 +86,23 @@ Six cases in `docs/DEMO_CASES.md`:
 - Do not use the abbreviation `ATLS` in Python identifiers; the package is `ats`.
 - Do not commit case images to `assets/` (gitignored).
 - Do not turn off mock mode by default — local development runs in mock mode.
+
+## Bring-up notes (deviations from the playbook, captured during Day 1)
+
+The playbook references `rocm/vllm-dev:nightly` as the container image. We are using **`vllm/vllm-openai-rocm:v0.17.1`** instead because it ships preloaded on the DO ROCm Quick Start image, is version-pinned (more reproducible than `:nightly`), and we verified Qwen2.5-VL-7B comes up cleanly on it. The two images take **different command shapes** — `vllm/vllm-openai-rocm:*` has `[vllm serve]` as its entrypoint, so the docker command is `<model> --flag …` (no `vllm serve` prefix). `scripts/serve_vllm.sh` is wired for the v0.17.1 entrypoint shape. See `docs/ROCM_FEEDBACK.md` finding #4.
+
+The DO Quick Start image starts a `rocm` JupyterLab container on boot that occupies port 8000. Stop it before serving vLLM:
+
+```
+docker stop rocm && docker rm rocm
+```
+
+See `docs/ROCM_FEEDBACK.md` finding #1.
+
+The droplet is reachable from outside the US over Tailscale, NOT over the public IP — the developer's ISP intercepts SSH on port 22 to DO public IPs (host-key MITM), so the laptop ↔ droplet path goes through a Tailscale tunnel. Same constraint applies to local code → vLLM on `:8000` later: use the droplet's tailnet IP. See `docs/ROCM_FEEDBACK.md` finding #5.
+
+First-run AITER JIT kernel compilation can take 10-15 minutes after weights load with no progress messages. The API is unreachable during this window. Subsequent starts hit the JIT cache and warm in ~2 min. See `docs/ROCM_FEEDBACK.md` finding #2.
+
+## How to reach the droplet
+
+The user-side `~/.ssh/config` has a `Host atls-droplet` alias that points at the tailnet IP (`100.116.60.54`) over standard port 22. After both ends are on the same tailnet (`tailscale status` shows two peers), `ssh atls-droplet` Just Works. Do **not** edit local code to use the public DigitalOcean IP — it will not be reachable.
