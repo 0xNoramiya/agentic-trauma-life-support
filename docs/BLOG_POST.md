@@ -70,14 +70,17 @@ A few notes on what's in there.
 
 ## 5. Numbers
 
-Representative single-MI300X numbers from `scripts/run_benchmarks.py`:
+Representative single-MI300X numbers from `scripts/run_benchmarks.py`, n=5 per scenario, streaming chat-completion against the live vLLM server over Tailscale (laptop in Indonesia → DO ATL1 droplet):
 
-- **TTFT (single image, short context):** _pending real run_
-- **Throughput (sustained, single-image-long-context):** _pending real run_
-- **Peak VRAM under `--max-num-seqs 4`:** _pending real run_
-- **Concurrent batch-of-4 wall latency:** _pending real run_
+- **TTFT (single image, short ~150-token vitals):** **862 ms median, 1506 ms p95**
+- **TTFT (single image, ~3k-token retrieved context):** **864 ms median, 1018 ms p95** — interestingly the same; image encoding through the vision tower is the dominant prompt-prefill cost, not the text portion
+- **Sustained throughput:** **23.1 tok/sec median (short), 23.7 tok/sec (long context)** — consistent regardless of input size
+- **Total per-call wall clock (drafter pass, ~220-token output):** 9.6 s median, 10.1 s p95
+- **End-to-end pipeline (drafter + verifier on the six demo cases):** 46–60 s, **median ~55 s**
+- **Cold start to API ready:** ~22 minutes on first run after droplet boot — almost all of which is AITER kernel JIT compilation (the rmsnorm kernel alone took 1188 s on a fresh MI300X). The hidden silence during this window is captured as `docs/ROCM_FEEDBACK.md` finding #2.
+- **Peak VRAM under `--max-num-seqs 4`:** ~150–185 GiB / 192 GiB depending on KV-cache fill — comfortably under the 0.95 utilization budget.
 
-Full table and per-scenario p50/p95 in [`docs/BENCHMARKS.md`](BENCHMARKS.md).
+Full per-scenario table with p50/p95 in [`docs/BENCHMARKS.md`](BENCHMARKS.md).
 
 The cost-comparison table that goes with these numbers:
 

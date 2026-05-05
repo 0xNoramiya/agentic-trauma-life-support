@@ -66,17 +66,32 @@ For the global-health, resource-limited-deployment use case, the MI300X is the o
 <!-- scenario:single-image-short -->
 ### single-image-short
 
-Pending — run `scripts/run_benchmarks.py --scenario single-image-short` on the MI300X droplet for a clean TTFT + throughput per-scenario breakdown.
+- N: 5
+- Median TTFT: 862.17 ms (p95 1505.84 ms)
+- Median total: 9571.18 ms (p95 10070.45 ms)
+- Median tokens/sec: 23.09 (p95 23.36)
+- Median output tokens: 221
+- Peak VRAM: n/a
 <!-- /scenario:single-image-short -->
 
 <!-- scenario:single-image-long-context -->
 ### single-image-long-context
 
-Pending — run `scripts/run_benchmarks.py --scenario single-image-long-context` on the MI300X droplet.
+- N: 5
+- Median TTFT: 863.68 ms (p95 1017.78 ms)
+- Median total: 13475.49 ms (p95 16195.15 ms)
+- Median tokens/sec: 23.7 (p95 23.92)
+- Median output tokens: 320
+- Peak VRAM: n/a
 <!-- /scenario:single-image-long-context -->
 
 <!-- scenario:concurrent-batch-4 -->
 ### concurrent-batch-4
 
-Pending — run `scripts/run_benchmarks.py --scenario concurrent-batch-4` on the MI300X droplet.
+- N: 3
+- Median TTFT: 952.91 ms (p95 1081.29 ms)
+- Median total: 13278.02 ms (p95 15162.47 ms)
+- Median tokens/sec: 20.2 (p95 21.63)
+- Median output tokens: 228.0
+- Peak VRAM: n/a
 <!-- /scenario:concurrent-batch-4 -->
