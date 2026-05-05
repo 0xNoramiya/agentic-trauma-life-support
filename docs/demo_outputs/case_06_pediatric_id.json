@@ -1,0 +1,85 @@
+{
+  "case_id": "case_06_pediatric_id",
+  "patient_brief": {
+    "age": 8,
+    "sex": "M",
+    "mechanism": "Kecelakaan lalu lintas (motor vs mobil), terlempar 3 meter."
+  },
+  "primary_survey": {
+    "A_airway": {
+      "concern_level": "moderate",
+      "imaging_findings": [],
+      "actions_required": [
+        "Periksa dan pastikan saluran napas terbuka.",
+        "Siapkan alat intubasi endotrakeal jika diperlukan."
+      ]
+    },
+    "B_breathing": {
+      "concern_level": "moderate",
+      "rr": null,
+      "spo2": null,
+      "imaging_findings": [],
+      "actions_required": [
+        "Pasang drain toraks kanan sekarang.",
+        "Monitor suara napas dan retraksi dada."
+      ]
+    },
+    "C_circulation": {
+      "concern_level": "high",
+      "hr": null,
+      "sbp": null,
+      "dbp": null,
+      "imaging_findings": [],
+      "actions_required": [
+        "Lakukan pemeriksaan FAST untuk mengecualikan perdarahan intra-abdomen.",
+        "Siapkan transfusi darah dan cairan intravena."
+      ]
+    },
+    "D_disability": {
+      "concern_level": "low",
+      "gcs": null,
+      "actions_required": [
+        "Lakukan pemeriksaan neurologis berulang."
+      ]
+    },
+    "E_exposure": {
+      "concern_level": "low",
+      "temp": null,
+      "actions_required": [
+        "Lakukan pemeriksaan total body secara teliti."
+      ]
+    }
+  },
+  "disposition": {
+    "priority": "urgent",
+    "recommended_actions": [
+      {
+        "action": "Lakukan pemeriksaan FAST untuk mengecualikan perdarahan intra-abdomen.",
+        "rationale": "Pasien dalam keadaan syok dengan mekanisme trauma berat, perlu mengecualikan sumber perdarahan.",
+        "urgency": "<5min",
+        "citation_id": null
+      }
+    ],
+    "escalation": {
+      "who": "Spesialis bedah trauma",
+      "when": "now"
+    },
+    "additional_imaging": [],
+    "labs": []
+  },
+  "red_flags": [],
+  "citations": [],
+  "model_metadata": {
+    "model": "ATLS_Triage_v1.0",
+    "confidence": "high",
+    "limitations": [
+      "Hanya satu proyeksi AP, tanpa lateral.",
+      "Kualitas gambar membatasi penilaian detail struktur paru."
+    ],
+    "disclaimer": "Ini adalah dukungan keputusan saja, bukan diagnosis, dan tidak untuk penggunaan klinis tanpa pengawasan.",
+    "verifier_notes": [
+      "The chest X-ray shows no clear evidence of a significant right-sided hemothorax to justify immediate chest tube placement.",
+      "The draft assumes shock based on low BP, but this is not supported by the given vitals. Recommend FAST exam to rule out intra-abdominal bleeding."
+    ]
+  }
+}

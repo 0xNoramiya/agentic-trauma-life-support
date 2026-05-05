@@ -1,0 +1,90 @@
+{
+  "case_id": "case_03_flail_chest",
+  "patient_brief": {
+    "age": 67,
+    "sex": "F",
+    "mechanism": "restrained driver in head-on MVC at ~80 km/h"
+  },
+  "primary_survey": {
+    "A_airway": {
+      "concern_level": "moderate",
+      "imaging_findings": [],
+      "actions_required": [
+        "Assess airway patency and consider oropharyngeal/nasopharyngeal airway if splinting respirations worsen. Urgency: <5min."
+      ]
+    },
+    "B_breathing": {
+      "concern_level": "moderate",
+      "rr": null,
+      "spo2": null,
+      "imaging_findings": [],
+      "actions_required": [
+        "Apply high-flow oxygen and consider analgesia for pain management. Urgency: now.",
+        "Prepare for possible intubation if respiratory distress progresses. Urgency: <5min."
+      ]
+    },
+    "C_circulation": {
+      "concern_level": "low",
+      "hr": null,
+      "sbp": null,
+      "dbp": null,
+      "imaging_findings": [],
+      "actions_required": [
+        "Monitor vital signs closely. Urgency: <15min."
+      ]
+    },
+    "D_disability": {
+      "concern_level": "low",
+      "gcs": 15,
+      "actions_required": [
+        "Continue neurologic monitoring. Urgency: <1hr."
+      ]
+    },
+    "E_exposure": {
+      "concern_level": "low",
+      "temp": null,
+      "actions_required": [
+        "Undress patient completely for full body inspection. Urgency: <15min."
+      ]
+    }
+  },
+  "disposition": {
+    "priority": "urgent",
+    "recommended_actions": [
+      {
+        "action": "Admit to ICU for close monitoring and potential ventilatory support.",
+        "rationale": "Patient has flail chest with paradoxical motion, which may require ventilatory support based on severity of injury.",
+        "urgency": "<5min",
+        "citation_id": "EAST PMG-p5-c2"
+      }
+    ],
+    "escalation": {
+      "who": "Trauma surgeon",
+      "when": "now"
+    },
+    "additional_imaging": [],
+    "labs": []
+  },
+  "red_flags": [
+    {
+      "flag": "No immediate red flags identified on CT imaging.",
+      "evidence": [],
+      "immediate_action": "Prepare for possible intubation if respiratory distress progresses. Urgency: <5min."
+    }
+  ],
+  "citations": [],
+  "model_metadata": {
+    "model": "ATLS_Triage_v1.0",
+    "confidence": "high",
+    "limitations": [
+      "CT images provided instead of expected chest X-ray; analysis adapted accordingly.",
+      "Single axial view, no coronal/sagittal reconstructions available."
+    ],
+    "disclaimer": "This output is for decision support only and does not constitute a medical diagnosis. It should not be used for unsupervised clinical care.",
+    "verifier_notes": [
+      "The draft incorrectly identifies the imaging as a chest X-ray when it is actually a series of CT scans. The findings and actions should be adjusted accordingly.",
+      "The draft mentions 'flail segment' and 'paradoxical motion', but these findings are not directly visible on the provided CT images. These should be removed or downgraded.",
+      "The draft suggests a high concern level for breathing due to a flail chest, which is not supported by the CT images. The concern level should be reduced."
+    ]
+  }
+}

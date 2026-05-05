@@ -1,0 +1,118 @@
+{
+  "case_id": "case_05_normal_polytrauma",
+  "patient_brief": {
+    "age": 34,
+    "sex": "M",
+    "mechanism": "ejected from MVC at highway speed"
+  },
+  "primary_survey": {
+    "A_airway": {
+      "concern_level": "low",
+      "imaging_findings": [],
+      "actions_required": [
+        "Maintain airway patency with cervical spine precautions.",
+        "Consider advanced airway if GCS declines."
+      ]
+    },
+    "B_breathing": {
+      "concern_level": "moderate",
+      "rr": null,
+      "spo2": null,
+      "imaging_findings": [
+        {
+          "finding": "diffuse pulmonary opacities",
+          "laterality": "bilateral",
+          "severity": "moderate",
+          "citation_id": null
+        }
+      ],
+      "actions_required": [
+        "Supplemental oxygen to maintain SpO2 > 94%",
+        "Consider repeat CXR or CT chest if respiratory status deteriorates."
+      ]
+    },
+    "C_circulation": {
+      "concern_level": "critical",
+      "hr": null,
+      "sbp": null,
+      "dbp": null,
+      "imaging_findings": [
+        {
+          "finding": "diffuse pulmonary opacities",
+          "laterality": "bilateral",
+          "severity": "moderate",
+          "citation_id": null
+        }
+      ],
+      "actions_required": [
+        "Initiate large-bore IV access and administer crystalloid bolus.",
+        "Perform focused assessment with sonography for trauma (FAST) exam now.",
+        "Consider CT abdomen/pelvis now if FAST positive or hemodynamically unstable."
+      ]
+    },
+    "D_disability": {
+      "concern_level": "low",
+      "gcs": 15,
+      "actions_required": [
+        "Repeat neurologic exam q15min.",
+        "Consider head CT if GCS declines."
+      ]
+    },
+    "E_exposure": {
+      "concern_level": "moderate",
+      "temp": null,
+      "actions_required": [
+        "Fully expose patient for complete physical exam.",
+        "Assess for additional injuries including extremities and spine."
+      ]
+    }
+  },
+  "disposition": {
+    "priority": "urgent",
+    "recommended_actions": [
+      {
+        "action": "Perform FAST exam now.",
+        "rationale": "Abdominal seatbelt sign and mild abdominal tenderness raise concern for intra-abdominal injury.",
+        "urgency": "now",
+        "citation_id": null
+      },
+      {
+        "action": "Order CT abdomen/pelvis now.",
+        "rationale": "Hypotension and tachycardia suggest potential intra-abdominal or pelvic hemorrhage.",
+        "urgency": "now",
+        "citation_id": null
+      }
+    ],
+    "escalation": {
+      "who": "Trauma surgeon",
+      "when": "<5min"
+    },
+    "additional_imaging": [],
+    "labs": []
+  },
+  "red_flags": [
+    {
+      "flag": "Hypotension with tachycardia",
+      "evidence": [
+        "BP 102/64",
+        "HR 118"
+      ],
+      "immediate_action": "Initiate resuscitation and consider FAST/CT abdomen/pelvis now."
+    }
+  ],
+  "citations": [],
+  "model_metadata": {
+    "model": "ATLS_Triage_v1.0",
+    "confidence": "moderate",
+    "limitations": [
+      "CT images provided, but analysis limited to chest findings only."
+    ],
+    "disclaimer": "This output is for clinical decision support only and does not constitute a medical diagnosis. It should not be used for unsupervised clinical care.",
+    "verifier_notes": [
+      "The draft incorrectly states there are no imaging findings for breathing despite the presence of diffuse pulmonary opacities on CT. These findings should be included.",
+      "The draft incorrectly states there are no imaging findings for circulation despite the presence of diffuse pulmonary opacities on CT. These findings should be included.",
+      "The draft incorrectly sets the breathing concern level to low despite the presence of diffuse pulmonary opacities on CT. This should be upgraded to moderate.",
+      "The draft incorrectly sets the circulation concern level to high despite the presence of diffuse pulmonary opacities on CT. This should be upgraded to critical."
+    ]
+  }
+}
