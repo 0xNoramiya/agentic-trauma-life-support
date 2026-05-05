@@ -53,6 +53,16 @@
       "page_url": "https://commons.wikimedia.org/wiki/File:Normal_posteroanterior_(PA)_chest_radiograph_(X-ray).jpg",
       "fetched_at": "2026-05-05",
       "license_note": "Wikimedia Commons file. Check the file page for the specific license (CC BY-SA / CC0 / etc.) before public redistribution. The image itself is not committed."
+    },
+    "case_01_tension_ptx": {
+      "case_id": "case_01_tension_ptx",
+      "filename": "case_01_tension_ptx.jpg",
+      "source_origin": "Wikimedia Commons",
+      "title": "Tension pneumothorax",
+      "caption": "Tension pneumothorax chest X-ray with mediastinal shift.",
+      "page_url": "https://commons.wikimedia.org/wiki/File:Tension-pneumothorax.png",
+      "fetched_at": "2026-05-05",
+      "license_note": "Wikimedia Commons file. Check the file page for the specific license before public redistribution. The image itself is not committed."
     }
   }
 }

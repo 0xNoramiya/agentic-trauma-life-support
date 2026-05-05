@@ -1,0 +1,124 @@
+{
+  "case_id": "case_01_tension_ptx",
+  "patient_brief": {
+    "age": 30,
+    "sex": "M",
+    "mechanism": "motorbike vs car, thrown approximately 6 meters"
+  },
+  "primary_survey": {
+    "A_airway": {
+      "concern_level": "high",
+      "imaging_findings": [
+        {
+          "finding": "tracheal deviation",
+          "laterality": "right",
+          "severity": "severe",
+          "citation_id": null
+        }
+      ],
+      "actions_required": [
+        "Intubate immediately to secure the airway.",
+        "Prepare for surgical airway if intubation fails."
+      ]
+    },
+    "B_breathing": {
+      "concern_level": "high",
+      "rr": null,
+      "spo2": null,
+      "imaging_findings": [
+        {
+          "finding": "decreased lung volume",
+          "laterality": "left",
+          "severity": "severe",
+          "citation_id": null
+        }
+      ],
+      "actions_required": [
+        "Perform needle decompression of the left chest now.",
+        "Prepare for chest tube insertion if there is no improvement."
+      ]
+    },
+    "C_circulation": {
+      "concern_level": "high",
+      "hr": null,
+      "sbp": null,
+      "dbp": null,
+      "imaging_findings": [],
+      "actions_required": [
+        "Initiate fluid resuscitation now.",
+        "Consider blood products if hypotension persists."
+      ]
+    },
+    "D_disability": {
+      "concern_level": "moderate",
+      "gcs": 14,
+      "actions_required": [
+        "Repeat neuro exam every 15 minutes.",
+        "Prepare for head CT if GCS declines."
+      ]
+    },
+    "E_exposure": {
+      "concern_level": "low",
+      "temp": null,
+      "actions_required": [
+        "Undress the patient completely for full body inspection <15min."
+      ]
+    }
+  },
+  "disposition": {
+    "priority": "urgent",
+    "recommended_actions": [
+      {
+        "action": "Transfer to trauma bay for definitive care.",
+        "rationale": "The patient has multiple life-threatening injuries requiring immediate intervention.",
+        "urgency": "now",
+        "citation_id": null
+      }
+    ],
+    "escalation": {
+      "who": "Trauma surgeon",
+      "when": "now"
+    },
+    "additional_imaging": [
+      "FAST exam now",
+      "CT chest/abdomen/pelvis <5min"
+    ],
+    "labs": [
+      "Type and crossmatch now",
+      "CBC, coags <5min"
+    ]
+  },
+  "red_flags": [
+    {
+      "flag": "Tension pneumothorax",
+      "evidence": [
+        "Decreased breath sounds on the left",
+        "JVD",
+        "Tracheal deviation right"
+      ],
+      "immediate_action": "Needle decompression now"
+    }
+  ],
+  "citations": [
+    {
+      "id": "EAST PMG-p9-c5",
+      "source": "EAST PMG — page 9",
+      "section": "Laterality of air volume in the lungs long after blunt chest trauma.",
+      "quote": "Laterality of air volume in the lungs long after blunt chest trauma.",
+      "url": null
+    }
+  ],
+  "model_metadata": {
+    "model": "ATLS_Triage_v1.0",
+    "confidence": "high",
+    "limitations": [
+      "Single AP view, no lateral",
+      "Image quality limits assessment of the right costophrenic angle"
+    ],
+    "disclaimer": "This output is for decision support only and should not be used as a diagnosis or for unsupervised clinical use.",
+    "verifier_notes": [
+      "The draft correctly identifies tracheal deviation to the right and decreased lung volume on the left, matching the X-ray findings.",
+      "The draft appropriately prioritizes actions for tension pneumothorax, which is supported by the imaging and clinical presentation."
+    ]
+  }
+}
