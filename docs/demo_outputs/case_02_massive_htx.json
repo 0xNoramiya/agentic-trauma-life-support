@@ -8,19 +8,40 @@
   "primary_survey": {
     "A_airway": {
       "concern_level": "moderate",
-      "imaging_findings": [],
+      "imaging_findings": [
+        {
+          "finding": "endotracheal tube in situ, tip at carina",
+          "laterality": "midline",
+          "severity": "mild",
+          "citation_id": null
+        }
+      ],
       "actions_required": [
-        "Prepare for rapid sequence intubation if there is any deterioration in airway patency.",
-        "Maintain cervical spine immobilization."
+        "Confirm ETT placement with capnography now",
+        "Consider video laryngoscopy if there is any doubt about airway patency now"
       ]
     },
     "B_breathing": {
       "concern_level": "high",
       "rr": null,
       "spo2": null,
-      "imaging_findings": [],
+      "imaging_findings": [
+        {
+          "finding": "blunting of the right costophrenic angle",
+          "laterality": "left",
+          "severity": "severe",
+          "citation_id": null
+        },
+        {
+          "finding": "increased opacity in the right hemithorax consistent with hemothorax",
+          "laterality": "left",
+          "severity": "severe",
+          "citation_id": null
+        }
+      ],
       "actions_required": [
-        "Assess the surgical field for sources of bleeding now."
+        "Insert large-bore chest tube on the right now",
+        "Administer supplemental oxygen now"
       ]
     },
     "C_circulation": {
@@ -30,24 +51,24 @@
       "dbp": null,
       "imaging_findings": [],
       "actions_required": [
-        "Initiate massive transfusion protocol now.",
-        "Perform focused assessment with sonography for trauma (FAST) exam now."
+        "Initiate massive transfusion protocol now",
+        "Perform focused assessment with sonography for trauma (FAST) exam now",
+        "Prepare for emergent laparotomy if FAST positive for free fluid now"
       ]
     },
     "D_disability": {
       "concern_level": "moderate",
       "gcs": 14,
       "actions_required": [
-        "Repeat neurologic examination regularly <5min.",
-        "Consider CT head if there is any deterioration in mental status <15min."
+        "Repeat neurologic exam in 5 minutes <5min"
       ]
     },
     "E_exposure": {
       "concern_level": "low",
       "temp": null,
       "actions_required": [
-        "Undress the patient completely <15min.",
-        "Inspect the entire body for other injuries <15min."
+        "Undress the patient completely <5min",
+        "Inspect skin for additional injuries <5min"
       ]
     }
   },
@@ -55,8 +76,8 @@
     "priority": "urgent",
     "recommended_actions": [
       {
-        "action": "Admit to trauma bay for resuscitation and further management.",
-        "rationale": "Patient is hypotensive and tachycardic following a significant mechanism of injury.",
+        "action": "Transfer to operating room for exploratory laparotomy",
+        "rationale": "Patient has signs of hemorrhagic shock with a mechanism suggesting potential intra-abdominal injury.",
         "urgency": "now",
         "citation_id": null
       }
@@ -65,44 +86,30 @@
       "who": "Trauma surgeon",
       "when": "now"
     },
-    "additional_imaging": [
-      "CT chest/abdomen/pelvis now."
-    ],
-    "labs": [
-      "Type and crossmatch now.",
-      "CBC, coagulation profile, chemistries now."
-    ]
+    "additional_imaging": [],
+    "labs": []
   },
   "red_flags": [
     {
-      "flag": "Hypotension and tachycardia with right-sided hemothorax",
+      "flag": "Hypotension with tachycardia and blunted right costophrenic angle",
       "evidence": [
         "BP 78/42",
-        "HR 132"
+        "HR 132",
+        "blunting of the left costophrenic angle"
       ],
-      "immediate_action": "Needle decompression and chest tube insertion now."
+      "immediate_action": "Insert large-bore chest tube on the right now"
     }
   ],
-  "citations": [
-    {
-      "id": "EAST PMG-p9-c4",
-      "source": "EAST PMG — page 9",
-      "section": "Unilateral post-traumatic pulmonary contusion: findings of a review.",
-      "quote": "Unilateral post-traumatic pulmonary contusion: findings of a review.",
-      "url": null
-    }
-  ],
+  "citations": [],
   "model_metadata": {
     "model": "ATLS_Triage_v1.0",
     "confidence": "high",
     "limitations": [
-      "Single AP view, no lateral.",
-      "Provided image is not a chest X-ray, limiting the accuracy of thoracic findings."
+      "single AP view, no lateral"
     ],
     "disclaimer": "This output is for decision support only and should not be used as a diagnosis or for unsupervised clinical use.",
     "verifier_notes": [
-      "The provided image is not a chest X-ray but rather an intraoperative surgical view, making the imaging findings and related actions inappropriate.",
-      "The draft incorrectly assumes a chest X-ray was taken and interprets findings not visible in the provided image."
+      "The chest X-ray shows significant opacification of the left hemithorax rather than the right, indicating a possible hemothorax on the left side."
     ]
   }
 }

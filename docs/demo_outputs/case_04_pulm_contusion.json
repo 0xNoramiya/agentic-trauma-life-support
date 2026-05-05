@@ -8,7 +8,14 @@
   "primary_survey": {
     "A_airway": {
       "concern_level": "low",
-      "imaging_findings": [],
+      "imaging_findings": [
+        {
+          "finding": "no evidence of tracheal deviation",
+          "laterality": "midline",
+          "severity": "mild",
+          "citation_id": null
+        }
+      ],
       "actions_required": [
         "Continue monitoring airway patency.",
         "Prepare for advanced airway intervention if there is any deterioration."
@@ -20,55 +27,42 @@
       "spo2": null,
       "imaging_findings": [
         {
-          "finding": "Pneumothorax",
-          "laterality": "left",
+          "finding": "bilateral pulmonary contusions",
+          "laterality": "bilateral",
           "severity": "moderate",
-          "citation_id": "n/a"
+          "citation_id": null
         }
       ],
       "actions_required": [
-        "Insert a chest tube on the right side now.",
-        "Consider supplemental oxygen to maintain SpO2 >90%."
+        "Administer supplemental oxygen to maintain SpO2 > 90%.",
+        "Consider intubation if respiratory status deteriorates."
       ]
     },
     "C_circulation": {
-      "concern_level": "low",
+      "concern_level": "moderate",
       "hr": null,
       "sbp": null,
       "dbp": null,
-      "imaging_findings": [
-        {
-          "finding": "Pericardial effusion",
-          "laterality": "midline",
-          "severity": "moderate",
-          "citation_id": "n/a"
-        },
-        {
-          "finding": "Pleural effusion",
-          "laterality": "left",
-          "severity": "moderate",
-          "citation_id": "n/a"
-        }
-      ],
+      "imaging_findings": [],
       "actions_required": [
-        "Monitor vital signs closely.",
-        "Be prepared for pericardiocentesis if hemodynamic instability develops."
+        "Initiate intravenous access and administer crystalloid fluids cautiously.",
+        "Monitor hemodynamic parameters closely."
       ]
     },
     "D_disability": {
       "concern_level": "low",
       "gcs": 14,
       "actions_required": [
-        "Repeat neurologic exam regularly.",
-        "Consider head CT if there is any decline in mental status."
+        "Perform a detailed neurological examination.",
+        "Repeat GCS assessments regularly."
       ]
     },
     "E_exposure": {
       "concern_level": "low",
       "temp": null,
       "actions_required": [
-        "Fully undress the patient for a complete physical examination.",
-        "Assess for any other injuries that might have been missed."
+        "Undress the patient completely for a thorough examination.",
+        "Maintain normothermia."
       ]
     }
   },
@@ -77,9 +71,9 @@
     "recommended_actions": [
       {
         "action": "Admit to ICU for close monitoring and management.",
-        "rationale": "Patient has a significant pneumothorax and was involved in a high-energy trauma.",
+        "rationale": "Patient has sustained significant blunt trauma with potential for respiratory compromise.",
         "urgency": "<5min",
-        "citation_id": "n/a"
+        "citation_id": null
       }
     ],
     "escalation": {
@@ -91,26 +85,25 @@
   },
   "red_flags": [
     {
-      "flag": "Severe pneumothorax",
+      "flag": "Potential for respiratory failure due to bilateral pulmonary contusions.",
       "evidence": [
-        "Right-sided pneumothorax seen on ultrasound",
-        "Mildly tachypneic"
+        "Bilateral pulmonary contusions seen on CT scan.",
+        "Patient is mildly tachypneic and on supplemental oxygen."
       ],
-      "immediate_action": "Insert a chest tube immediately."
+      "immediate_action": "Prepare for intubation and mechanical ventilation if necessary."
     }
   ],
   "citations": [],
   "model_metadata": {
-    "model": "ATLS_Triage_v1",
+    "model": "ATLS_Triage_v1.0",
     "confidence": "high",
     "limitations": [
-      "Single AP view, no lateral"
+      "CT images are axial slices, not coronal or sagittal views."
     ],
     "disclaimer": "This output is for decision support only and does not constitute a medical diagnosis. It should not be used for unsupervised clinical practice.",
     "verifier_notes": [
-      "The draft incorrectly identifies a severe pneumothorax on the right side based on the provided ultrasound images. The images actually show a pneumothorax (Pnm) on the left side.",
-      "The draft incorrectly identifies a mild pericardial effusion. The ultrasound shows a moderate pericardial effusion (Ef).",
-      "The draft does not mention the pleural effusion (PE) seen on the ultrasound."
+      "The CT images show bilateral pulmonary contusions which correlate with the patient's mild tachypnea and need for supplemental oxygen.",
+      "The draft correctly identifies bilateral pulmonary contusions on the provided CT images, correlating with the moderate concern level for breathing."
     ]
   }
 }

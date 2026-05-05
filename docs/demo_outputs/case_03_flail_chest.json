@@ -7,44 +7,60 @@
   },
   "primary_survey": {
     "A_airway": {
-      "concern_level": "moderate",
-      "imaging_findings": [],
+      "concern_level": "low",
+      "imaging_findings": [
+        {
+          "finding": "no evidence of tracheal deviation",
+          "laterality": "midline",
+          "severity": "mild",
+          "citation_id": null
+        }
+      ],
       "actions_required": [
-        "Assess airway patency and consider oropharyngeal/nasopharyngeal airway if splinting respirations worsen. Urgency: <5min."
+        "Monitor airway closely due to splinting respirations and paradoxical motion.",
+        "Prepare for potential advanced airway management if deterioration occurs."
       ]
     },
     "B_breathing": {
       "concern_level": "moderate",
       "rr": null,
       "spo2": null,
-      "imaging_findings": [],
+      "imaging_findings": [
+        {
+          "finding": "flail segment with paradoxical motion",
+          "laterality": "right",
+          "severity": "moderate",
+          "citation_id": null
+        }
+      ],
       "actions_required": [
-        "Apply high-flow oxygen and consider analgesia for pain management. Urgency: now.",
-        "Prepare for possible intubation if respiratory distress progresses. Urgency: <5min."
+        "Apply high-flow oxygen to maintain SpO2 > 90%",
+        "Consider positive pressure ventilation if SpO2 does not improve within <5min"
       ]
     },
     "C_circulation": {
-      "concern_level": "low",
+      "concern_level": "moderate",
       "hr": null,
       "sbp": null,
       "dbp": null,
       "imaging_findings": [],
       "actions_required": [
-        "Monitor vital signs closely. Urgency: <15min."
+        "Initiate two large-bore IV lines for fluid resuscitation now",
+        "Monitor vital signs closely for signs of hemodynamic instability"
       ]
     },
     "D_disability": {
       "concern_level": "low",
-      "gcs": 15,
+      "gcs": null,
       "actions_required": [
-        "Continue neurologic monitoring. Urgency: <1hr."
+        "Continue neurologic monitoring as GCS is 15 now"
       ]
     },
     "E_exposure": {
       "concern_level": "low",
       "temp": null,
       "actions_required": [
-        "Undress patient completely for full body inspection. Urgency: <15min."
+        "Undress the patient completely for a full-body inspection <15min"
       ]
     }
   },
@@ -52,39 +68,45 @@
     "priority": "urgent",
     "recommended_actions": [
       {
-        "action": "Admit to ICU for close monitoring and potential ventilatory support.",
-        "rationale": "Patient has flail chest with paradoxical motion, which may require ventilatory support based on severity of injury.",
-        "urgency": "<5min",
-        "citation_id": "EAST PMG-p5-c2"
+        "action": "Admit to ICU for close monitoring and management of flail chest",
+        "rationale": "Flail chest with paradoxical motion can lead to respiratory failure requiring mechanical ventilation.",
+        "urgency": "<1hr",
+        "citation_id": null
       }
     ],
     "escalation": {
       "who": "Trauma surgeon",
       "when": "now"
     },
-    "additional_imaging": [],
-    "labs": []
+    "additional_imaging": [
+      "Consider CT chest to evaluate for associated injuries <1hr"
+    ],
+    "labs": [
+      "Order complete blood count, coagulation profile, and type and crossmatch now"
+    ]
   },
   "red_flags": [
     {
-      "flag": "No immediate red flags identified on CT imaging.",
-      "evidence": [],
-      "immediate_action": "Prepare for possible intubation if respiratory distress progresses. Urgency: <5min."
+      "flag": "Flail chest with paradoxical motion",
+      "evidence": [
+        "Splinting respirations",
+        "Paradoxical motion of the right anterior chest wall"
+      ],
+      "immediate_action": "Apply high-flow oxygen and consider positive pressure ventilation"
     }
   ],
   "citations": [],
   "model_metadata": {
     "model": "ATLS_Triage_v1.0",
-    "confidence": "high",
+    "confidence": "moderate",
     "limitations": [
-      "CT images provided instead of expected chest X-ray; analysis adapted accordingly.",
-      "Single axial view, no coronal/sagittal reconstructions available."
+      "Single AP view, no lateral",
+      "Image quality limits assessment of the right costophrenic angle"
     ],
-    "disclaimer": "This output is for decision support only and does not constitute a medical diagnosis. It should not be used for unsupervised clinical care.",
+    "disclaimer": "This output is for decision support only and should not be considered a diagnosis. It is not intended for unsupervised clinical use.",
     "verifier_notes": [
-      "The draft incorrectly identifies the imaging as a chest X-ray when it is actually a series of CT scans. The findings and actions should be adjusted accordingly.",
-      "The draft mentions 'flail segment' and 'paradoxical motion', but these findings are not directly visible on the provided CT images. These should be removed or downgraded.",
-      "The draft suggests a high concern level for breathing due to a flail chest, which is not supported by the CT images. The concern level should be reduced."
+      "The chest X-ray does not clearly show a flail segment with paradoxical motion. The concern level for breathing may be overestimated.",
+      "The disposition priority and actions seem appropriate given the concern level, but the imaging findings should be revised."
     ]
   }
 }
