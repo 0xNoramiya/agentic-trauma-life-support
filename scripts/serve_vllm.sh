@@ -22,6 +22,15 @@ set -euo pipefail
 
 MODE="${1:-${MODE:-dev}}"
 
+# API key passed to vLLM's --api-key flag. Default "EMPTY" is fine for
+# tailnet-only access (the laptop and the droplet share a Tailscale tunnel,
+# so nobody else can reach :8000). When the HF Space is wired to the
+# droplet's *public* IP, set this to a real secret on both sides:
+#   export VLLM_API_KEY="sk-atls-$(openssl rand -hex 16)"
+# Then put the same value into the Space's Settings → Variables and secrets
+# under VLLM_API_KEY (Secret type).
+VLLM_API_KEY="${VLLM_API_KEY:-EMPTY}"
+
 # ---- Container image --------------------------------------------------------
 # vllm/vllm-openai-rocm:v0.17.1 is the official ROCm-side OpenAI-API server.
 # Entrypoint is `vllm serve`, so docker args become positional/flag args to
@@ -85,7 +94,7 @@ case "$MODE" in
     "${DOCKER_RUN[@]}" --name vllm-7b "$IMAGE" \
       "$MODEL" \
         --port 8000 \
-        --api-key EMPTY \
+        --api-key "$VLLM_API_KEY" \
         --max-model-len 8192 \
         --max-num-seqs 8 \
         --gpu-memory-utilization 0.85
@@ -103,7 +112,7 @@ case "$MODE" in
     "${DOCKER_RUN[@]}" --name vllm-72b "$IMAGE" \
       "$MODEL" \
         --port 8000 \
-        --api-key EMPTY \
+        --api-key "$VLLM_API_KEY" \
         --max-model-len 16384 \
         --max-num-seqs 4 \
         --gpu-memory-utilization 0.95

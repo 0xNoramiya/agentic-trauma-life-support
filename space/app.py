@@ -1,18 +1,25 @@
 """HF Spaces app for Agentic Trauma Life Support.
 
-Lightweight Gradio UI that calls Qwen2.5-VL-7B-Instruct via
-huggingface_hub.InferenceClient and renders the structured ATLS
-primary-survey output. The full hackathon pitch — Qwen2.5-VL-72B in BF16
-on a single AMD MI300X — is what produced the recorded demo video; this
-Space is the clickable click-through demo for judges.
+Lightweight Gradio UI that calls our own vLLM server (running on a single
+AMD MI300X) via the OpenAI-compatible chat-completions API and renders the
+structured ATLS primary-survey output. The Space and the production
+serving path use the *same* Qwen2.5-VL-72B BF16 model — the Space is just
+the clickable front door.
 
 The schema, prompts, and renderers are vendored under `ats/` from the
 main repo (see `sync_from_main.sh`).
+
+Configuration (all via HF Space `Settings → Variables and secrets`):
+  - VLLM_BASE_URL  (required) e.g. http://<droplet-public-ip>:8000/v1
+  - VLLM_API_KEY   (default: "EMPTY") must match `--api-key` on the server
+  - MODEL_ID       (default: Qwen/Qwen2.5-VL-72B-Instruct)
+  - REQUEST_TIMEOUT (default: 180 seconds — 72B first-token can be slow)
 """
 
 from __future__ import annotations
 
 import base64
+import copy
 import io
 import json
 import os
@@ -21,7 +28,8 @@ import sys
 from pathlib import Path
 
 import gradio as gr
-from huggingface_hub import InferenceClient
+import openai
+from openai import OpenAI
 from PIL import Image
 from pydantic import ValidationError
 
@@ -35,13 +43,17 @@ from ats.render.handoff_en import render_en  # noqa: E402
 from ats.render.handoff_id import render_id  # noqa: E402
 from ats.schema import TriageOutput, VerifierOutput  # noqa: E402
 
-MODEL_ID = "Qwen/Qwen2.5-VL-7B-Instruct"
-PROVIDER = os.environ.get("HF_PROVIDER", "auto")  # let HF route to a working backend
+VLLM_BASE_URL = os.environ.get("VLLM_BASE_URL", "").strip()
+VLLM_API_KEY = os.environ.get("VLLM_API_KEY", "EMPTY").strip() or "EMPTY"
+MODEL_ID = os.environ.get("MODEL_ID", "Qwen/Qwen2.5-VL-72B-Instruct").strip()
+REQUEST_TIMEOUT = float(os.environ.get("REQUEST_TIMEOUT", "180"))
 
 DISCLAIMER = (
     "**Decision support, not diagnosis.** Not for unsupervised clinical use. "
-    "This Space serves Qwen2.5-VL-7B; the production hackathon demo runs the 72B "
-    "BF16 path on a single AMD MI300X. See the engineering blog for benchmarks."
+    "This Space talks to a single AMD MI300X serving Qwen2.5-VL-72B in BF16 "
+    "(no model parallelism, no quantization). The MI300X is powered down "
+    "outside live-demo windows to keep costs low; if the call below errors out, "
+    "the box is asleep — see the engineering blog for the recorded run."
 )
 
 EXAMPLE_VIGNETTES = {
@@ -80,9 +92,7 @@ def _image_to_data_url(img: Image.Image) -> str:
     return f"data:image/jpeg;base64,{b64}"
 
 
-def _build_drafter_messages(
-    image_url: str, vitals_text: str, lang: str
-) -> list[dict]:
+def _build_drafter_messages(image_url: str, vitals_text: str, lang: str) -> list[dict]:
     system = get_drafter_system("id" if lang == "id" else "en")
     return [
         {"role": "system", "content": system},
@@ -117,13 +127,33 @@ def _build_verifier_messages(image_url: str, draft: TriageOutput) -> list[dict]:
     ]
 
 
+def _make_client() -> OpenAI:
+    if not VLLM_BASE_URL:
+        raise RuntimeError(
+            "VLLM_BASE_URL is not configured. Set it in the Space's "
+            "Settings → Variables and secrets, e.g. "
+            "http://<droplet-public-ip>:8000/v1"
+        )
+    return OpenAI(
+        base_url=VLLM_BASE_URL,
+        api_key=VLLM_API_KEY,
+        timeout=REQUEST_TIMEOUT,
+        max_retries=0,
+    )
+
+
 def _call_model(
-    client: InferenceClient,
+    client: OpenAI,
     messages: list[dict],
     schema_cls: type,
     max_tokens: int = 2048,
 ) -> str:
-    """Call HF Inference Provider chat-completion with response_format if available."""
+    """Call vLLM chat-completions with OpenAI-canonical structured output.
+
+    vLLM v0.17.x supports `response_format={"type": "json_schema", ...}`
+    natively — same shape as OpenAI's structured output. We still strip
+    markdown fences from the response as a belt-and-braces measure.
+    """
     response_format = {
         "type": "json_schema",
         "json_schema": {
@@ -132,22 +162,13 @@ def _call_model(
             "strict": True,
         },
     }
-    try:
-        resp = client.chat_completion(
-            messages=messages,
-            model=MODEL_ID,
-            max_tokens=max_tokens,
-            temperature=0.2,
-            response_format=response_format,
-        )
-    except TypeError:
-        # Fall back if the provider's client signature doesn't accept response_format
-        resp = client.chat_completion(
-            messages=messages,
-            model=MODEL_ID,
-            max_tokens=max_tokens,
-            temperature=0.2,
-        )
+    resp = client.chat.completions.create(
+        model=MODEL_ID,
+        messages=messages,
+        max_tokens=max_tokens,
+        temperature=0.2,
+        response_format=response_format,
+    )
     content = resp.choices[0].message.content or ""
     return _strip_fence(content)
 
@@ -155,8 +176,6 @@ def _call_model(
 def _apply_verifier_patches(draft: TriageOutput, patches: list) -> TriageOutput:
     """Apply patch list onto a deep copy of the draft. See main repo for the
     full path-walker; we keep a small inline version here."""
-    import copy
-
     patched = copy.deepcopy(draft)
     for p in patches:
         path = p.path if hasattr(p, "path") else p["path"]
@@ -183,12 +202,22 @@ def _apply_verifier_patches(draft: TriageOutput, patches: list) -> TriageOutput:
         return draft
 
 
+def _format_connection_error(exc: Exception) -> str:
+    """Friendly markdown for the most common failure: droplet asleep."""
+    return (
+        "**Backend unreachable.** The MI300X droplet appears to be powered "
+        "down (it's only on during demo windows to keep costs low). "
+        "If you're a hackathon judge, reach out via the GitHub repo and "
+        "we'll spin it up — the recorded video shows a full live run.\n\n"
+        f"Underlying error:\n```\n{type(exc).__name__}: {exc}\n```"
+    )
+
+
 def run_pipeline(
     image: Image.Image | None,
     vitals: str,
     lang: str,
     use_verifier: bool,
-    hf_token: str | None,
     progress: gr.Progress | None = None,
 ) -> tuple[str, str]:
     """Returns (markdown handoff, JSON pretty-printed)."""
@@ -199,15 +228,21 @@ def run_pipeline(
     if not vitals.strip():
         return "Please type the vitals / clinical vignette.", ""
 
-    token = (hf_token or os.environ.get("HF_TOKEN") or "").strip() or None
-    client = InferenceClient(provider=PROVIDER, token=token)
+    try:
+        client = _make_client()
+    except RuntimeError as exc:
+        return f"**Configuration error:** {exc}", ""
 
     image_url = _image_to_data_url(image)
 
-    progress(0.0, desc="Drafting…")
+    progress(0.0, desc=f"Drafting on {MODEL_ID}…")
     drafter_msgs = _build_drafter_messages(image_url, vitals, lang)
     try:
         raw_draft = _call_model(client, drafter_msgs, TriageOutput, max_tokens=2048)
+    except (openai.APIConnectionError, openai.APITimeoutError) as exc:
+        return _format_connection_error(exc), ""
+    except openai.APIStatusError as exc:
+        return f"**Drafter API error ({exc.status_code}):** `{exc.message}`", ""
     except Exception as exc:  # noqa: BLE001
         return f"**Drafter call failed:** `{exc}`", ""
 
@@ -216,26 +251,24 @@ def run_pipeline(
         draft.case_id = "live_demo"
     except ValidationError as exc:
         return (
-            f"**Drafter output didn't match the schema** (Qwen2.5-VL-7B can be "
-            f"loose under guided JSON via the free Inference API). Raw output:\n\n"
+            "**Drafter output didn't match the schema.** Raw output:\n\n"
             f"```json\n{raw_draft[:2000]}\n```\n\n"
             f"Validation errors:\n```\n{exc}\n```"
         ), raw_draft
 
     if use_verifier:
-        progress(0.5, desc="Running verifier…")
+        progress(0.5, desc="Running verifier pass…")
         verifier_msgs = _build_verifier_messages(image_url, draft)
         try:
             raw_verifier = _call_model(client, verifier_msgs, VerifierOutput, max_tokens=1024)
             verifier_out = VerifierOutput.model_validate_json(raw_verifier)
             draft = _apply_verifier_patches(draft, verifier_out.patches)
             if verifier_out.verifier_notes:
-                draft.model_metadata.verifier_notes = (
-                    list(draft.model_metadata.verifier_notes)
-                    + list(verifier_out.verifier_notes)
-                )
+                draft.model_metadata.verifier_notes = list(
+                    draft.model_metadata.verifier_notes
+                ) + list(verifier_out.verifier_notes)
         except (ValidationError, json.JSONDecodeError, Exception):  # noqa: BLE001
-            # Verifier is best-effort; if it fails, we surface the unverified draft.
+            # Verifier is best-effort; if it fails, surface the unverified draft.
             pass
 
     progress(1.0, desc="Rendering…")
@@ -250,6 +283,18 @@ def _load_example(case_id: str) -> tuple[str, str]:
     return vignette, lang
 
 
+def _backend_status_md() -> str:
+    """One-line backend status shown in the UI."""
+    if not VLLM_BASE_URL:
+        return (
+            "Backend: **not configured** — set `VLLM_BASE_URL` in Space "
+            "Settings → Variables and secrets."
+        )
+    # Hide the host but show enough so the team can verify the right env is wired.
+    redacted = re.sub(r"//[^/]+", "//<host>", VLLM_BASE_URL)
+    return f"Backend: `{MODEL_ID}` via `{redacted}`"
+
+
 def build_ui() -> gr.Blocks:
     with gr.Blocks(
         title="Agentic Trauma Life Support",
@@ -259,9 +304,11 @@ def build_ui() -> gr.Blocks:
             "# Agentic Trauma Life Support\n\n"
             "Chest X-ray + dictated vitals → structured ATLS primary survey + "
             "SBAR handoff. Multilingual (English / Bahasa Indonesia). Drafter → "
-            "Verifier → Renderer pipeline. Backed by Qwen2.5-VL-7B-Instruct on "
-            "this Space; the full demo runs Qwen2.5-VL-72B BF16 on a single "
-            "AMD MI300X — see the engineering blog for that.\n\n" + DISCLAIMER
+            "Verifier → Renderer pipeline. Backed by **Qwen2.5-VL-72B in BF16 "
+            "on a single AMD MI300X** — no tensor parallelism, no quantization.\n\n"
+            + DISCLAIMER
+            + "\n\n"
+            + _backend_status_md()
         )
 
         with gr.Row():
@@ -288,16 +335,6 @@ def build_ui() -> gr.Blocks:
                 use_verifier = gr.Checkbox(
                     label="Run verifier pass (slower, catches hallucinated findings)",
                     value=False,
-                )
-                hf_token = gr.Textbox(
-                    label="HF token (optional — for higher rate limits)",
-                    placeholder="hf_…",
-                    type="password",
-                    info=(
-                        "Free tier works without a token at low volume. If you hit a "
-                        "rate limit, paste your read token from "
-                        "https://huggingface.co/settings/tokens."
-                    ),
                 )
 
                 with gr.Accordion("Try a sample case", open=False):
@@ -333,7 +370,7 @@ def build_ui() -> gr.Blocks:
 
         go_btn.click(
             run_pipeline,
-            inputs=[image, vitals, lang, use_verifier, hf_token],
+            inputs=[image, vitals, lang, use_verifier],
             outputs=[handoff_md, json_view],
         )
 

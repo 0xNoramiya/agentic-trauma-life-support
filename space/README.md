@@ -11,13 +11,16 @@ license: mit
 short_description: Agentic ATLS primary survey on chest X-ray + dictated vitals
 hf_oauth: false
 models:
-  - Qwen/Qwen2.5-VL-7B-Instruct
+  - Qwen/Qwen2.5-VL-72B-Instruct
 tags:
   - medical
   - trauma
   - vision-language
   - gradio
   - decision-support
+  - amd
+  - mi300x
+  - rocm
 ---
 
 # Agentic Trauma Life Support (ATLS) — Live Demo
@@ -30,15 +33,17 @@ A multilingual, agentic trauma triage decision-support tool. The double entendre
 
 ## What this Space runs
 
-This Space serves the lighter **Qwen2.5-VL-7B-Instruct** path so the demo is clickable from any browser. The full hackathon pitch — **Qwen2.5-VL-72B in BF16 on a single AMD MI300X** — is what produced the recorded demo video and the benchmarks in the engineering blog. See the repo for the production serving setup (`scripts/serve_vllm.sh prod`).
+This Space is a thin Gradio front-end. The actual model — **Qwen2.5-VL-72B-Instruct in BF16** — runs on a **single AMD MI300X** GPU (192 GB HBM3) over vLLM 0.17.1 ROCm with AITER kernels. **No tensor parallelism. No quantization.** Single-GPU, single-replica. The Space's `app.py` makes OpenAI-compatible chat-completions calls directly to that vLLM endpoint, so what you click is exactly what the production pipeline runs.
 
 The pipeline implemented here:
 
-1. **Drafter** — chest X-ray + dictated vitals + retrieved guideline excerpts → strict `TriageOutput` JSON via the same Pydantic schema and prompts as the production setup.
-2. **Verifier** (optional toggle in this Space) — re-shows the image plus the draft and produces clinical-safety patches/notes.
-3. **Renderer** — SBAR-style markdown handoff in English or Bahasa Indonesia.
+1. **Drafter** — chest X-ray + dictated vitals → strict `TriageOutput` JSON via OpenAI-canonical `response_format={"type": "json_schema", ...}` enforced server-side by vLLM.
+2. **Verifier** (optional toggle) — re-shows the image plus the draft to the same model in clinical-safety-reviewer mode and produces patches/notes that get applied to a deep copy of the draft.
+3. **Renderer** — SBAR-style markdown handoff in English or Bahasa Indonesia. Schema enums stay in English so the JSON validates regardless of UI language.
 
-Backed by `huggingface_hub.InferenceClient`. Free-tier rate limits apply.
+## Why a single MI300X?
+
+That is the entire pitch. 72B BF16 weights are ~144 GB; the MI300X's 192 GB HBM3 fits the model with margin for KV cache. The same model in BF16 will not fit on an H100 (80 GB) or H200 (141 GB) without sharding, quantizing, or pulling weights off-GPU — each of which adds engineering surface and tail latency. For an emergency physician building a triage tool solo, the simplest deployment shape that runs the strongest model wins, and on this generation of hardware that means MI300X.
 
 ## Demo cases worth trying
 
@@ -48,16 +53,16 @@ Backed by `huggingface_hub.InferenceClient`. Free-tier rate limits apply.
 
 Sample vignettes and full case descriptions: see [`docs/DEMO_CASES.md`](https://github.com/0xNoramiya/agentic-trauma-life-support/blob/main/docs/DEMO_CASES.md) on the main repo.
 
-## Why this Space is on Qwen2.5-VL-7B and not 72B
+## A note on availability
 
-The 192GB-class MI300X needed to hold Qwen2.5-VL-72B in BF16 isn't available on free HF Space tiers. The 7B variant is the largest one that fits the free path. For the *real* numbers (TTFT, throughput, peak VRAM) on the 72B production serve, see `docs/BENCHMARKS.md` in the main repo.
+The MI300X droplet is powered down outside live-demo windows (cost: ~$1.99/hr active, ~$0.05/hr idle). If your click here returns a connection error, the box is asleep — the recorded demo video and the benchmarks (`docs/BENCHMARKS.md`) show full live runs.
 
-## Repo + engineering blog + demo video
+## Repo + engineering blog + benchmarks + ROCm feedback
 
 - **GitHub:** <https://github.com/0xNoramiya/agentic-trauma-life-support>
 - **Engineering blog:** [`docs/BLOG_POST.md`](https://github.com/0xNoramiya/agentic-trauma-life-support/blob/main/docs/BLOG_POST.md)
-- **Benchmarks:** [`docs/BENCHMARKS.md`](https://github.com/0xNoramiya/agentic-trauma-life-support/blob/main/docs/BENCHMARKS.md)
-- **ROCm feedback:** [`docs/ROCM_FEEDBACK.md`](https://github.com/0xNoramiya/agentic-trauma-life-support/blob/main/docs/ROCM_FEEDBACK.md)
+- **Benchmarks (real numbers, single MI300X):** [`docs/BENCHMARKS.md`](https://github.com/0xNoramiya/agentic-trauma-life-support/blob/main/docs/BENCHMARKS.md)
+- **ROCm bring-up feedback for AMD:** [`docs/ROCM_FEEDBACK.md`](https://github.com/0xNoramiya/agentic-trauma-life-support/blob/main/docs/ROCM_FEEDBACK.md)
 - **Demo video:** _link added after recording_
 
 Built by an emergency physician for the AMD Developer Hackathon, May 2026. MIT licensed.
