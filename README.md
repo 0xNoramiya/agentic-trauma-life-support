@@ -56,7 +56,7 @@ chest X-ray + dictated vitals + retrieved excerpts
         └─────────────────────────┘
 ```
 
-Both model calls hit the same vLLM server. Retrieval (FAISS over a curated guideline corpus) happens locally before the Drafter call. Full architecture detail in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+Both model calls hit the same vLLM server. Retrieval (FAISS over a curated guideline corpus) happens locally before the Drafter call. Section 6 of the engineering writeup ([`docs/BLOG_POST.md`](docs/BLOG_POST.md)) walks the pipeline in detail.
 
 ## Why a single MI300X
 
@@ -232,24 +232,17 @@ Engineering blog post (`docs/BLOG_POST.md`) walks through these as "what we'd wa
 ├── scripts/
 │   ├── serve_vllm.sh         Canonical vLLM Docker invocation (dev / prod / spike)
 │   ├── build_index.py        Build/rebuild the FAISS retrieval index
-│   ├── run_benchmarks.py     TTFT, throughput, VRAM (now takes --image)
+│   ├── run_benchmarks.py     TTFT, throughput, VRAM (takes --image)
 │   ├── run_demo_cases.py     Run a named case end-to-end
-│   ├── fetch_demo_xrays.py   Source the six demo X-rays
-│   └── build_slides.sh       SLIDES.md → SLIDES.pdf via Marp
+│   └── fetch_demo_xrays.py   Source the six demo X-rays
 ├── space/                    HF Spaces front-end (Gradio + OpenAI client → vLLM)
 ├── docs/
+│   ├── BLOG_POST.md          2,400-word engineering blog post — start here
 │   ├── BENCHMARKS.md         Real numbers + cold-start + caveats
-│   ├── BLOG_POST.md          2,400-word engineering blog post
-│   ├── ROCM_FEEDBACK.md      Seven numbered bring-up findings
-│   ├── ARCHITECTURE.md       Pipeline diagram + module layout
+│   ├── ROCM_FEEDBACK.md      Seven numbered bring-up findings (for AMD)
 │   ├── DEMO_CASES.md         The six clinical vignettes
-│   ├── DEMO_SCRIPT.md        3-min video script + shot list
-│   ├── SLIDES.md             12-slide deck (Marp source — `./scripts/build_slides.sh`)
 │   ├── SPIKE_235B_AWQ.md     The Day-1 stretch experiment (skipped, with rationale)
-│   ├── SUBMISSION.md         lablab.ai submission, copy-paste-ready fields
-│   ├── TWEETS.md             Pre-staged Build-in-Public posts
-│   ├── VIDEO_PLAN.md         Demo-video storyboard + scene-by-scene
-│   ├── DAY_2_QUICKSTART.md   Operator cheat sheet
+│   ├── blog_image_prompts.txt  Inline-image prompts paired to the blog post
 │   ├── demo_outputs/         Per-case JSON + SUMMARY.md + first-real-run write-ups
 │   └── logs/                 vLLM startup, rocm-smi, AITER cache listing
 ├── assets/                   Six demo X-rays (gitignored except sources.json + README)
