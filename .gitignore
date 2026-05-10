@@ -76,8 +76,4 @@ docs/SLIDES.pdf
 docs/SLIDES.html
 
 # Video build artifacts — large binaries, derived from scripts/recordings
-video/audio/
-video/live_demo*.mp4
-video/demo_*.mp4
-video/compositions/.hyperframes/
-video/snapshots/
+video/
