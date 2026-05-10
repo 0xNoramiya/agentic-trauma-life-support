@@ -80,3 +80,4 @@ video/audio/
 video/live_demo*.mp4
 video/demo_*.mp4
 video/compositions/.hyperframes/
+video/snapshots/
