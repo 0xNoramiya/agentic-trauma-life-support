@@ -162,7 +162,10 @@ For each finding:
   - **Document loudly** that AITER's JIT cache lives in `/usr/local/lib/python3.12/dist-packages/aiter/jit/build/` (or wherever AITER stores it), and add a `-v /var/cache/aiter:/usr/local/lib/python3.12/dist-packages/aiter/jit/build` example to AMD's vLLM-on-MI300X bring-up guide. This buys ~20 minutes on every restart for free.
   - **Move the cache to a sane host-side default** — e.g., `/root/.cache/aiter/` or `$AITER_CACHE_DIR` — so it lives where users already think to mount caches. Most ROCm users already mount `~/.cache/huggingface`; a sibling default for AITER would be invisible-by-default the way it should be.
   - **Pre-bake** the AITER JIT cache into `vllm/vllm-openai-rocm:vX.Y.Z` for the most common (model, dtype, mi300x) combinations. The image is already 30+ GB; an extra few hundred MB of pre-compiled kernels would erase the worst recurring developer-experience tax in this stack.
-- **Logs / artifacts:** Wall-clock difference between cold and warm AITER paths is the entire signal here — see `docs/BENCHMARKS.md` "Cold-start" section.
+- **Logs / artifacts:**
+  - Wall-clock difference between cold and warm AITER paths — see `docs/BENCHMARKS.md` "Cold-start" section.
+  - The compiled AITER JIT cache for our run (single MI300X, BF16 Qwen2.5-VL-72B, vLLM 0.17.1, default flags) totals **414 MB** across four modules (`module_aiter_enum`, `module_rmsnorm`, `mha_varlen_fwd_bf16_…`, `module_fmha_v3_varlen_fwd`) — full directory listing at `docs/logs/aiter-jit-cache-2026-05-10.txt`. That's the size of what gets discarded on every `docker run --rm`. Pre-baking it (or documenting `-v /var/cache/aiter:/usr/local/lib/python3.12/dist-packages/aiter/jit/build`) is on the order of a 400 MB image-size hit for a 20-minute-per-restart developer-experience win.
+  - Full vLLM startup log including AITER timeline at `docs/logs/vllm-startup-2026-05-10.log`. Each per-module JIT cost is logged (`finish build [module_X], cost N.Ns`) — the rmsnorm module dominates by an order of magnitude.
 
 ---
 
