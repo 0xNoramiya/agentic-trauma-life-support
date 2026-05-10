@@ -74,3 +74,10 @@ coverage.xml
 # Marp-generated slide artifacts (build via scripts/build_slides.sh)
 docs/SLIDES.pdf
 docs/SLIDES.html
+
+# Video build artifacts — large binaries, derived from scripts/recordings
+video/audio/
+video/live_demo*.mp4
+video/demo_*.mp4
+video/index.html
+video/compositions/.hyperframes/
