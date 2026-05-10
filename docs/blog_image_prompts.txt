@@ -1,0 +1,99 @@
+ATLS — Inline image prompts for the technical blog post
+docs/BLOG_POST.md, ~2,400 words. Six images, each anchoring a major section.
+
+How to use:
+- Paste each prompt into ChatGPT (any image-capable model)
+- All six share the same clinical-editorial visual identity as the
+  cover_prompts.txt set, so the blog reads as one piece with the
+  social-media covers
+- Aspect ratio noted per prompt (most are 16:9; the timeline figure is
+  21:9 because the bar of silence wants room)
+- Where each image goes in BLOG_POST.md is noted at the start of each block
+
+Palette (every prompt enforces this):
+  warm paper canvas       #F8F7F4
+  deep ink primary text   #1A1F2E
+  sage green accent       #3A7A6E
+  light grey hairline     #D9D6D0
+  terracotta (used once)  #B8463A
+
+Anti-pattern footer (append if needed):
+  "Strict no: glowing brains, neural-network mesh, holographic doctors,
+   stock-photo physicians, futuristic UI mockups, flat-design illustration,
+   gradient backgrounds. The aesthetic is editorial print, not SaaS marketing."
+
+
+================================================================
+BLOG IMAGE 1  —  HERO (top of post, before §1)
+================================================================
+
+Editorial magazine-cover composition on a warm off-white paper canvas (#F8F7F4), 16:9. Centered vertically and horizontally, three lines of text stacked tight: top line in small all-caps deep-ink (#1A1F2E) sans-serif "AGENTIC TRAUMA LIFE SUPPORT", with letter-spacing about 0.18em; middle line a single horizontal hairline rule in muted sage green (#3A7A6E), about 220 px wide; below the rule, in large display serif italic deep-ink, the headline "Qwen2.5-VL-72B in full BF16 on a single AMD MI300X." Beneath the headline, in small caps deep-ink at lower opacity, "AMD DEVELOPER HACKATHON · MAY 2026". Generous negative space all around — the type sits in the lower two-thirds of the frame with the upper third empty paper. No imagery. No people. No icons. The composition feels like the title page of a serious medical or engineering journal — restraint, weight, confidence. 16:9.
+
+
+================================================================
+BLOG IMAGE 2  —  GPU MEMORY MATH (anchors §1 "Why we picked AMD")
+================================================================
+
+Editorial data figure on a warm off-white paper canvas (#F8F7F4), 16:9. Five horizontal bars stacked vertically with consistent left-edge alignment, each bar showing GPU memory capacity proportionally. The bars represent (top to bottom):
+  · "1 × NVIDIA H100" — 80 GB — short bar, light grey #D9D6D0
+  · "1 × NVIDIA H200" — 141 GB — medium bar, light grey #D9D6D0
+  · "2 × NVIDIA H100 NVLink" — 160 GB — slightly longer bar, light grey #D9D6D0
+  · "1 × NVIDIA B200" — 192 GB — long bar, light grey #D9D6D0
+  · "1 × AMD MI300X" — 192 GB — long bar, muted sage green #3A7A6E
+Each bar has its label in small-caps sans-serif to its left and the GB number in tabular-numeral display serif to its right, all in deep ink (#1A1F2E). A single dashed vertical line crosses the figure at the 145 GB position labeled in italic deep-ink "Qwen2.5-VL-72B in BF16 ≈ 145 GB". The two bars that cross the line (B200 and MI300X) are visually the only ones that "fit"; the MI300X bar is highlighted in sage to mark it as the choice. Below the figure, one short caption line in small light-sans deep ink: "the only sub-$2 / GPU-hr option that fits 72B in BF16 on one device." No background decoration, no chart axes, no gridlines beyond the single dashed threshold. The aesthetic is a magazine data-spread, like a financial-research note.
+
+
+================================================================
+BLOG IMAGE 3  —  AGENTIC PIPELINE (anchors §6 "Drafter / Verifier")
+================================================================
+
+Editorial textbook-spread illustration on a warm off-white paper canvas (#F8F7F4), 16:9. Three labeled rectangular cards arranged in a horizontal row, separated by thin sage-green arrows (#3A7A6E) running from left to right. Each card is the same size, deep-ink (#1A1F2E) outlined, with white inner fill, slight rounded corners (12 px). Card contents:
+
+  Card 1: "01" in small italic sage at the top corner, the word "DRAFTER" in deep-ink display serif, and below it three short lines in small sans-serif: "Chest X-ray", "Vitals + vignette", "Retrieved excerpts → TriageOutput JSON".
+  Card 2: "02" in small italic sage, "VERIFIER" in deep-ink display serif, below: "Re-shows the X-ray", "Compares to the draft", "Returns patches + notes". A single small terracotta-red asterisk (#B8463A) sits next to the "02".
+  Card 3: "03" in small italic sage, "RENDERER" in deep-ink display serif, below: "Validated JSON in", "SBAR markdown out", "EN or Bahasa Indonesia".
+
+Above all three cards, centered in small all-caps deep-ink sans-serif: "THREE AGENTS · ONE MODEL · ONE vLLM SERVER". Below all three cards, a single thin hairline in light grey (#D9D6D0) and underneath it the caption "Both model calls hit the same MI300X." in light italic deep-ink. Generous margins. No people, no medical equipment, no abstract neural-network pattern.
+
+
+================================================================
+BLOG IMAGE 4  —  BENCHMARK NUMBERS (anchors §5 "Numbers")
+================================================================
+
+Editorial data-spread on warm off-white paper (#F8F7F4), 16:9. Top half: a clean three-row table (no borders except thin sage-green hairlines between rows) showing the three benchmark scenarios. Columns from left to right: scenario name (small caps, deep-ink), TTFT median in ms (display serif, tabular numerals, deep-ink), throughput in tokens-per-second (display serif, tabular numerals), total wall-clock in seconds (display serif, tabular numerals). Three rows with values:
+  · "SINGLE IMAGE · SHORT PROMPT"          1981 ms      19.9 tok/s     15.4 s
+  · "SINGLE IMAGE · LONG CONTEXT"          1982 ms      21.5 tok/s     15.9 s
+  · "CONCURRENT BATCH OF 4"                2199 ms      18.4 tok/s     15.1 s
+
+Bottom half: centered, a single big number in display serif deep-ink, "183.95 / 191.69 GiB" with a small caps caption above reading "PEAK VRAM · CONCURRENT BATCH-4" and a small caps caption below reading "96% UTIL · GPU-MEMORY-UTILIZATION 0.95 BUDGET". A small italic deep-ink note at the very bottom: "n=5 per scenario · real chest X-ray (case_01_tension_ptx) · vLLM 0.17.1 ROCm". No bar charts, no gauges — just the typographic figure. The composition reads as a financial-report data page, not a marketing infographic.
+
+
+================================================================
+BLOG IMAGE 5  —  AITER COLD-START TIMELINE (anchors §4 or §8)
+================================================================
+
+Editorial timeline figure on warm off-white paper (#F8F7F4), 21:9 wide aspect (so the long silent stretch has room to breathe). A single horizontal timeline runs across the middle of the frame, from "00:00" on the left to "22:00" (in mm:ss) on the right, with light-grey hairline tick marks every 2 minutes. Above the timeline, four labeled spans — each a slim deep-ink (#1A1F2E) horizontal bar sitting on the timeline:
+
+  · 0:00 to 1:34 — bar labeled "WEIGHT LOAD · 94 s · 137 GiB into VRAM"
+  · 1:34 to 1:44 — short bar labeled "module_aiter_enum · 10 s"
+  · 1:44 to 21:32 — extra-long bar in muted sage green (#3A7A6E) labeled "module_rmsnorm · 1188 s · SILENT" with the word SILENT in small-caps italic
+  · 21:32 to 22:00 — short bar labeled "API READY"
+
+Below the timeline, large display serif deep ink centered: "~ 22 minutes." Below that, a small caps caption: "AITER FIRST-RUN JIT COMPILE · NO LOG OUTPUT BETWEEN 1:44 AND 21:32." A single small terracotta asterisk (#B8463A) by the SILENT label is the only saturated color in the figure. No people, no GPU illustration, no progress-bar UI mockup — just the timeline, the labels, and the typography. The composition reads as a quiet engineering case-study figure.
+
+
+================================================================
+BLOG IMAGE 6  —  CLOSING SIGN-OFF (bottom of post, after §9)
+================================================================
+
+Editorial closing-frame composition on warm off-white paper (#F8F7F4), 16:9. Centered, top to bottom in a tight stack: a short horizontal hairline rule in muted sage green (#3A7A6E) about 200 px wide; below it, in display serif deep-ink (#1A1F2E), the wordmark "ATLS" with tight letterspacing; below the wordmark, in small caps sans-serif deep-ink at slightly lower opacity, three short stacked lines:
+  "AGENTIC TRAUMA LIFE SUPPORT"
+  "MIT · MAY 2026"
+  "BUILT BY AN EMERGENCY PHYSICIAN FOR THE AMD DEVELOPER HACKATHON"
+
+Generous top and bottom margins; the sign-off block sits roughly in the lower-middle of the frame. No URLs in this image (those go in the post text below). No imagery, no decoration. The composition is the closing flourish of a serious editorial piece — quiet, finished, the same restrained type-only register as Image 1.
+
+
+================================================================
+END
+================================================================
