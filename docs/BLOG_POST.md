@@ -133,7 +133,7 @@ None of these are showstoppers. Together they cost us roughly two hours of Day 1
 ## 9. Repo and demo
 
 - Repo: <https://github.com/0xNoramiya/agentic-trauma-life-support>
-- Live demo (7B on HF Space): _pending deployment_
+- **Live demo (72B on the actual MI300X):** <https://huggingface.co/spaces/lablab-ai-amd-developer-hackathon/atls> — the Space is a thin Gradio front-end that calls our vLLM endpoint directly, so a click there hits the same model weights, the same AITER kernels, the same `response_format=json_schema` path described above. The MI300X droplet is powered down outside live-demo windows; if a click returns "Backend unreachable," the box is asleep — see the recorded demo video for the full live run.
 - Demo video: _pending recording_
 - Built by an emergency physician for the AMD Developer Hackathon, May 2026.
 - License: MIT.

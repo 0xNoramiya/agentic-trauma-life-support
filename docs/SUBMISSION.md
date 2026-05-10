@@ -26,7 +26,7 @@ The agentic AI realization of the ATLS primary survey on chest X-ray plus dictat
 
 **The single-MI300X argument is the load-bearing technical claim.** Qwen2.5-VL-72B-Instruct in BF16 is ~145 GB of weights. H100 (80 GB) and H200 (141 GB) cannot fit it. MI300X (192 GB HBM3) fits with margin and serves the workload at sub-$2 per hour — the only option that combines "fits the model" with the cost story the global-health use case requires. The B200 fits but at 3–5× the per-hour cost. We benchmark TTFT, throughput, and peak VRAM on a single MI300X and ship the numbers in the engineering blog post.
 
-**Build-in-Public artifacts** ship alongside the demo: a 2,400-word engineering blog post on the bring-up (`docs/BLOG_POST.md`), a numbered ROCm feedback document with five real findings from Day 1 (`docs/ROCM_FEEDBACK.md`), a writeup of the Day 1 235B-AWQ spike (skipped, with rationale, in `docs/SPIKE_235B_AWQ.md`), a multilingual demo with both English and Indonesian outputs, and 23 passing tests covering the schema, renderers, verifier patch logic, drafter validation retry, and end-to-end mock-mode pipeline.
+**Build-in-Public artifacts** ship alongside the demo: a 2,400-word engineering blog post on the bring-up (`docs/BLOG_POST.md`), a numbered ROCm feedback document with six real findings from Day 1–2 (`docs/ROCM_FEEDBACK.md`), a writeup of the Day 1 235B-AWQ spike (skipped, with rationale, in `docs/SPIKE_235B_AWQ.md`), a multilingual demo with both English and Indonesian outputs, and 27 passing tests covering the schema, renderers, verifier patch logic, drafter validation retry, retrieval edges, and end-to-end mock-mode pipeline.
 
 **Built by a practicing emergency physician.** MIT licensed. Decision support only — not a diagnosis, not for unsupervised clinical use.
 
@@ -96,7 +96,9 @@ Hugging Face Spaces (under the AMD Developer Hackathon HF Organization)
 
 ## Application URL
 
-_<paste HF Space URL after deploy>_
+<https://huggingface.co/spaces/lablab-ai-amd-developer-hackathon/atls>
+
+The Space talks directly to vLLM running on the MI300X droplet — no model substitution, no inference-API hop. The droplet is powered down outside live-demo windows; the recorded video below shows the end-to-end run.
 
 ---
 
@@ -111,14 +113,14 @@ _<paste HF Space URL after deploy>_
 - [ ] Minimum 2 social posts tagging @AIatAMD and @lablab on X (templates in playbook §9)
 - [x] Open-source repo (MIT)
 - [x] Technical walkthrough (the engineering blog post)
-- [x] Meaningful ROCm / Developer Cloud feedback (`docs/ROCM_FEEDBACK.md` — five numbered findings)
+- [x] Meaningful ROCm / Developer Cloud feedback (`docs/ROCM_FEEDBACK.md` — six numbered findings)
 
 ---
 
 ## Pre-submit checklist
 
 - [ ] Re-read every field above; replace every `<placeholder>` and `_pending_` line with real content
-- [ ] Verify the HF Space loads and runs case 01 end-to-end before pasting the URL
+- [x] Verify the HF Space loads and runs case 01 end-to-end before pasting the URL (verified 2026-05-10)
 - [ ] Verify the YouTube video runtime is ≤ 3:00
 - [ ] Verify the GitHub repo is public, has the MIT license, and the README's "Demo" section links resolve
 - [ ] Engineering blog post live (Medium/dev.to/GH Pages — at least one)

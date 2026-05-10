@@ -95,8 +95,24 @@ def _build_messages(image_b64: str, vitals: str) -> list[dict]:
     ]
 
 
-def _run_scenario(client: InferenceClient, scenario: str, n: int) -> list[dict]:
-    image_b64 = _make_placeholder_image()
+def _load_image_b64(path: Path) -> str:
+    """Load and base64-encode a real X-ray for representative TTFT numbers."""
+    img = Image.open(path)
+    if img.mode != "RGB":
+        img = img.convert("RGB")
+    buf = io.BytesIO()
+    img.save(buf, format="JPEG", quality=85)
+    return base64.b64encode(buf.getvalue()).decode("ascii")
+
+
+def _run_scenario(
+    client: InferenceClient,
+    scenario: str,
+    n: int,
+    image_b64: str | None = None,
+) -> list[dict]:
+    if image_b64 is None:
+        image_b64 = _make_placeholder_image()
     if scenario == "single-image-short":
         messages = _build_messages(image_b64, SHORT_VITALS)
         return [time_completion(client, messages, max_tokens=512) for _ in range(n)]
@@ -172,6 +188,12 @@ def main() -> int:
     parser.add_argument("--scenario", choices=SCENARIOS, required=True)
     parser.add_argument("--n", type=int, default=5, help="Number of runs.")
     parser.add_argument(
+        "--image",
+        type=Path,
+        default=None,
+        help="Path to a real chest X-ray. Defaults to a 1024x1024 grey placeholder.",
+    )
+    parser.add_argument(
         "--out",
         type=Path,
         default=REPO_ROOT / "docs" / "BENCHMARKS.md",
@@ -195,8 +217,10 @@ def main() -> int:
         )
         return 2
 
-    print(f"Running scenario={args.scenario} n={args.n} ...", flush=True)
-    samples = _run_scenario(client, args.scenario, args.n)
+    image_b64 = _load_image_b64(args.image) if args.image else None
+    src = str(args.image) if args.image else "1024x1024 grey placeholder"
+    print(f"Running scenario={args.scenario} n={args.n} image={src} ...", flush=True)
+    samples = _run_scenario(client, args.scenario, args.n, image_b64=image_b64)
     vram_gb = read_peak_vram_gb()
 
     block = _format_markdown(args.scenario, args.n, samples, vram_gb)
