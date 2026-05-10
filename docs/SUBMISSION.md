@@ -76,9 +76,16 @@ The agentic AI realization of the ATLS primary survey on chest X-ray plus dictat
 
 ## Slide Presentation
 
-**PDF or Google Slides link:** _<paste PDF link>_
+**PDF or Google Slides link:** _<paste PDF link or upload `docs/SLIDES.pdf` to Drive / GitHub Releases and link>_
 
-Source markdown in `docs/SLIDES.md`. Export to PDF before submitting.
+Source markdown in `docs/SLIDES.md` (Marp flavor — YAML frontmatter at top, `---` between slides). Build the PDF with:
+
+```bash
+./scripts/build_slides.sh        # writes docs/SLIDES.pdf
+./scripts/build_slides.sh html   # writes docs/SLIDES.html for browser preview
+```
+
+Requires Node.js 18+. The script invokes `@marp-team/marp-cli` via `npx`; first run fetches it from npm.
 
 ---
 

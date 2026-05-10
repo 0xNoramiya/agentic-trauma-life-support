@@ -1,10 +1,20 @@
-# Slide deck — Agentic Trauma Life Support
-
-12 slides, ~2.5 min reading time live. Export to PDF for the lablab submission. The numbers slide and the closing slide are the only ones that need real benchmark / final-link content; everything else is shippable now.
-
-The intended visual style is plain — code, schema, rocm-smi screenshots, and one or two real handoffs from the demo. No stock photography, no flat-design illustrations. The credibility comes from showing the actual outputs.
-
 ---
+marp: true
+theme: default
+paginate: true
+size: 16:9
+---
+
+<!--
+Slide deck — Agentic Trauma Life Support
+12 slides, ~2.5 min reading time live. Export to PDF for the lablab submission.
+
+Build: `./scripts/build_slides.sh` (uses Marp CLI via npx; produces docs/SLIDES.pdf).
+
+Visual style: plain — code, schema, rocm-smi screenshots, and one or two real
+handoffs from the demo. No stock photography, no flat-design illustrations.
+The credibility comes from showing the actual outputs.
+-->
 
 ## Slide 1 — Title
 
