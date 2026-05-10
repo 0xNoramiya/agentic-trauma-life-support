@@ -63,6 +63,10 @@ coverage.xml
 
 # Logs
 *.log
+# Operational artifacts under docs/logs/ are committed evidence (vllm
+# startup, AITER JIT timeline, etc.) backing the benchmark + ROCm
+# feedback claims — ship them with the repo.
+!docs/logs/*.log
 
 # Claude Code local working dir
 .claude/
