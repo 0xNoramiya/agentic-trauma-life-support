@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #f8f7f4;
+  --color-paper-2: #f3f1ec;
+  --color-ink: #1a1f2e;
+  --color-ink-soft: rgba(26, 31, 46, 0.72);
+  --color-sage: #3a7a6e;
+  --color-sage-soft: rgba(58, 122, 110, 0.4);
+  --color-hairline: #d9d6d0;
+  --color-terracotta: #b8463a;
+
+  --font-display: var(--font-source-serif), Georgia, "Times New Roman", serif;
+  --font-body: var(--font-plex-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "JetBrains Mono", "Menlo", monospace;
+}
+
+/* ----- base ----- */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-feature-settings: "kern", "liga", "calt";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* paper grain — extremely subtle */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image:
+    radial-gradient(rgba(26, 31, 46, 0.018) 1px, transparent 1px),
+    radial-gradient(rgba(26, 31, 46, 0.012) 1px, transparent 1px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 1px 2px;
+  mix-blend-mode: multiply;
+}
+
+/* ----- typographic helpers ----- */
+
+.drop-cap::first-letter {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 4.6em;
+  line-height: 0.86;
+  float: left;
+  margin: 0.06em 0.08em 0 -0.02em;
+  color: var(--color-sage);
+}
+
+.smallcaps {
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.18em;
+}
+
+/* ----- hero entrance stagger ----- */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fadeUp 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.fade-up-1 { animation-delay: 0.05s; }
+.fade-up-2 { animation-delay: 0.22s; }
+.fade-up-3 { animation-delay: 0.42s; }
+.fade-up-4 { animation-delay: 0.62s; }
+.fade-up-5 { animation-delay: 0.82s; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .fade-up { animation: none; }
+}
+
+/* ----- selection ----- */
+::selection {
+  background-color: rgba(58, 122, 110, 0.22);
+  color: var(--color-ink);
+}
+
+/* ----- focus rings ----- */
+*:focus-visible {
+  outline: 2px solid var(--color-sage);
+  outline-offset: 4px;
+  border-radius: 1px;
+}
