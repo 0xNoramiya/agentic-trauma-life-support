@@ -19,9 +19,9 @@ Inspired by Velvet Standard (Vignelli — architectural symmetry, single accent,
 
 ## Typography
 
-- **Display headline:** `'Source Serif 4', 'Tinos', 'EB Garamond', serif` — 80–120 px on display scenes, line-height 1.05, weight 600, never italic
-- **Body / captions:** `'Inter', system-ui, sans-serif` — 22–32 px, weight 400, line-height 1.5
-- **Labels / SMALL CAPS:** `'Inter', system-ui, sans-serif` — 16–18 px, weight 600, `letter-spacing: 0.12em`, `text-transform: uppercase`
+- **Display headline:** `'Source Serif 4', 'Tinos', serif` — 80–120 px on display scenes, line-height 1.05, weight 600, never italic. Italic allowed only on the scene-7 pull quote.
+- **Body / captions:** `'IBM Plex Sans', system-ui, sans-serif` — 24–32 px, weight 300 (yes, light — clinical authority comes from restraint, not bold), line-height 1.5. Note: `Inter` is intentionally avoided per the typography reference.
+- **Labels / SMALL CAPS:** `'IBM Plex Sans', system-ui, sans-serif` — 18–22 px, weight 600, `letter-spacing: 0.14em`, `text-transform: uppercase`
 - **Numerals (memory math, GB, $/hr):** add `font-variant-numeric: tabular-nums` so columns align
 - **Pull quotes (scene 7):** display serif italic, 60–72 px, indented; opening quotation mark in accent sage
 
