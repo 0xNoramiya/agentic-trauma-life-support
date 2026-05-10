@@ -144,6 +144,26 @@ For each finding:
   vllm serve: error: argument --limit-mm-per-prompt: Value video=0 cannot be converted to <function loads at 0x7881cbba2fc0>.
   ```
 
+### 7. AITER JIT kernel build directory is inside the container; `docker run --rm` discards it
+
+- **Severity:** medium
+- **Title:** Re-running the same `vllm serve` command against the same model + same ROCm release re-spends 20+ minutes on AITER kernel JIT compilation, because the JIT build directory lives inside the container's writable layer at `/usr/local/lib/python3.12/dist-packages/aiter/jit/build/`. The standard `docker run --rm` lifecycle blows it away on every restart.
+- **Description:** Cold-start cost on `vllm/vllm-openai-rocm:v0.17.1` for `Qwen/Qwen2.5-VL-72B-Instruct` on MI300X is ~22 minutes wall clock — ~94 s of weight load and ~20 minutes of AITER JIT (rmsnorm alone took 1188 s on a fresh container). On a second startup the same minute we expected a JIT cache hit and got the full cold compile again. We initially assumed the cache lived in `/root/.cache/aiter/` or `/root/.cache/torch/`; it doesn't. Strace and `find` showed the JIT artifacts get written to `/usr/local/lib/python3.12/dist-packages/aiter/jit/build/` *inside the container*. Without an explicit volume mount, `docker run --rm` deletes that path with the container.
+
+  This is non-obvious because:
+  - The official `serve_vllm` examples on AMD's docs all use `--rm` and do not mount any AITER cache directory.
+  - There is no warning during JIT compile that says "this work will not persist."
+  - A user who builds a snapshot of the host (we did, via DigitalOcean droplet snapshot) reasonably expects the AITER cache to come back with the snapshot — it doesn't, because it was never on the host.
+- **Repro steps:**
+  1. `docker run --rm vllm/vllm-openai-rocm:v0.17.1 Qwen/Qwen2.5-VL-72B-Instruct --port 8000 --api-key EMPTY --max-model-len 16384 --gpu-memory-utilization 0.95` — wait ~22 min for ready.
+  2. `docker stop vllm-72b && docker rm vllm-72b`.
+  3. Re-run the same command on the same droplet, same image, same model. Expect ~2-min warm start. Observe ~22-min cold start instead. The `[aiter] start build [module_rmsnorm]` line returns.
+- **Suggested fix:** One of —
+  - **Document loudly** that AITER's JIT cache lives in `/usr/local/lib/python3.12/dist-packages/aiter/jit/build/` (or wherever AITER stores it), and add a `-v /var/cache/aiter:/usr/local/lib/python3.12/dist-packages/aiter/jit/build` example to AMD's vLLM-on-MI300X bring-up guide. This buys ~20 minutes on every restart for free.
+  - **Move the cache to a sane host-side default** — e.g., `/root/.cache/aiter/` or `$AITER_CACHE_DIR` — so it lives where users already think to mount caches. Most ROCm users already mount `~/.cache/huggingface`; a sibling default for AITER would be invisible-by-default the way it should be.
+  - **Pre-bake** the AITER JIT cache into `vllm/vllm-openai-rocm:vX.Y.Z` for the most common (model, dtype, mi300x) combinations. The image is already 30+ GB; an extra few hundred MB of pre-compiled kernels would erase the worst recurring developer-experience tax in this stack.
+- **Logs / artifacts:** Wall-clock difference between cold and warm AITER paths is the entire signal here — see `docs/BENCHMARKS.md` "Cold-start" section.
+
 ---
 
-_Findings 1–6 captured 2026-05-05 during Day 1 / Day 2 bring-up of Qwen2.5-VL-72B-Instruct on a single MI300X via DO ATL1 + vLLM 0.17.1. More to come as benchmarking and real-X-ray demo cases land._
+_Findings 1–7 captured 2026-05-05 to 2026-05-10 during Day 1 / Day 2 bring-up of Qwen2.5-VL-72B-Instruct on a single MI300X via DO ATL1 + vLLM 0.17.1. Finding #7 was discovered when we restored the droplet from a snapshot and observed a full cold AITER JIT recompile despite the host-side HF cache being intact._

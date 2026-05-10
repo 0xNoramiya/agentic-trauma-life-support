@@ -116,7 +116,7 @@ If the rest of the hackathon runs ahead of schedule, the spike comes back as a f
 
 ## 8. What we'd want from AMD next
 
-The full friction list is in [`docs/ROCM_FEEDBACK.md`](ROCM_FEEDBACK.md), with severity, repro steps, and suggested fixes for each. The five items captured during Day 1 bring-up:
+The full friction list is in [`docs/ROCM_FEEDBACK.md`](ROCM_FEEDBACK.md), with severity, repro steps, and suggested fixes for each. The headline items from Day 1–2 bring-up:
 
 1. **The DigitalOcean ROCm Quick Start image silently grabs port 8000 with a JupyterLab container.** The first time you run `vllm serve … --port 8000`, vLLM crashes with `OSError: [Errno 98] Address already in use` and you have to chase it down to a Docker container called `rocm` that nobody told you was there. Friction. Either bind JupyterLab to localhost, or add a login banner.
 
@@ -128,7 +128,9 @@ The full friction list is in [`docs/ROCM_FEEDBACK.md`](ROCM_FEEDBACK.md), with s
 
 5. **The most consequential one for the AMD AI Developer Program APAC cohort: SE Asia ISP SSH MITM.** We're in Indonesia. The developer's laptop ↔ DO public IP path is transparently intercepted by the ISP on port 22 — host-key fingerprint mismatch, `Permission denied (publickey)` with zero entries in the droplet's `/var/log/auth.log`, packets never reach sshd. Other ports get RST'd or filtered too. The fix is an overlay network — we used Tailscale, which works on the free tier in five minutes. We landed on it and moved on, but a non-trivial fraction of the AMD AI Developer Program cohort signs up from APAC and is going to bounce off this. A single page in the cloud-bring-up docs ("if you're outside the US and SSH to the public IP is acting weird, install Tailscale") would solve it.
 
-None of these are showstoppers. Together they cost us roughly two hours of Day 1.
+6. **AITER JIT kernel cache lives inside the container, not on the host.** `vllm/vllm-openai-rocm:v0.17.1` writes its compiled AITER kernels to `/usr/local/lib/python3.12/dist-packages/aiter/jit/build/` — *inside* the container's writable layer. The standard `docker run --rm` lifecycle deletes that path on every restart. We discovered this the hard way after restoring the droplet from a snapshot and watching a full ~22-minute cold AITER recompile on what we thought would be a warm-cache restart. The fix on our side is one extra `-v` mount; on AMD's side it's either documenting the cache path or shipping a precompiled-kernels variant of the official image.
+
+None of these are showstoppers. Together they cost us roughly four hours of bring-up time, of which finding 6 is by far the worst because it recurs on every container restart instead of once.
 
 ## 9. Repo and demo
 
