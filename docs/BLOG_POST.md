@@ -70,14 +70,18 @@ A few notes on what's in there.
 
 ## 5. Numbers
 
-Representative single-MI300X numbers from `scripts/run_benchmarks.py`, n=5 per scenario, streaming chat-completion against the live vLLM server over Tailscale (laptop in Indonesia → DO ATL1 droplet):
+Representative single-MI300X numbers from `scripts/run_benchmarks.py`, n=5 per scenario, streaming chat-completion against the live vLLM server over Tailscale (laptop in Indonesia → DO ATL1 droplet). The benchmark fires the same real chest X-ray (case_01_tension_ptx.jpg) every run — see `docs/BENCHMARKS.md` for the placeholder-vs-real-CXR delta:
 
-- **TTFT (single image, short ~150-token vitals):** **862 ms median, 1506 ms p95**
-- **TTFT (single image, ~3k-token retrieved context):** **864 ms median, 1018 ms p95** — interestingly the same; image encoding through the vision tower is the dominant prompt-prefill cost, not the text portion
-- **Sustained throughput:** **23.1 tok/sec median (short), 23.7 tok/sec (long context)** — consistent regardless of input size
-- **Total per-call wall clock (drafter pass, ~220-token output):** 9.6 s median, 10.1 s p95
+- **TTFT (real CXR + short ~150-token vitals):** **1981 ms median, 4396 ms p95**
+- **TTFT (real CXR + ~3 k-token retrieved context):** **1982 ms median, 2157 ms p95** — interestingly identical to the short case; vision-tower image encoding is the dominant prompt-prefill cost, the text portion is negligible
+- **Sustained throughput:** **19.9 tok/sec (short), 21.5 tok/sec (long context)** — long-context pass is slightly *faster* per token because the model is producing longer, more reasoning-heavy responses for the retrieved-excerpt scenario
+- **Total per-call wall clock (drafter pass, ~250-token output):** 15.4 s median (short), 15.9 s (long context)
+- **Concurrent batch of 4** (4 simultaneous drafter calls): **2199 ms median TTFT, 18.4 tok/sec/stream** — only ~10% throughput drop under load; HBM3 bandwidth has plenty of headroom
 - **End-to-end pipeline (drafter + verifier on the six demo cases):** 46–60 s, **median ~55 s**
-- **Cold start to API ready:** ~22 minutes on first run after droplet boot — almost all of which is AITER kernel JIT compilation (the rmsnorm kernel alone took 1188 s on a fresh MI300X). The hidden silence during this window is captured as `docs/ROCM_FEEDBACK.md` finding #2.
+- **Peak VRAM under concurrent-batch-4:** 183.95 GiB / 191.69 GiB (96%) — sits right at the `--gpu-memory-utilization 0.95` budget, exactly as advertised
+- **Cold start to API ready:** ~22 minutes on first run after droplet boot — almost all of which is AITER kernel JIT compilation (the rmsnorm kernel alone took 1188 s on a fresh MI300X). The hidden silence during this window is `docs/ROCM_FEEDBACK.md` finding #2; the fact that "warm" restarts after `docker run --rm` recompile from scratch (because AITER's JIT cache lives inside the container) is finding #7.
+
+**One number worth dwelling on:** real-CXR TTFT is 2.3× the same path with a 1024×1024 grey placeholder. We had been benchmarking against grey for two days and only caught it when we threaded the real X-ray through. Same model, same prompts, same path — but flat grey gives the vision tower nothing to encode and it short-circuits. Worth a sanity-check item on anybody else's vision-language benchmark setup.
 - **Peak VRAM under `--max-num-seqs 4`:** ~150–185 GiB / 192 GiB depending on KV-cache fill — comfortably under the 0.95 utilization budget.
 
 Full per-scenario table with p50/p95 in [`docs/BENCHMARKS.md`](BENCHMARKS.md).

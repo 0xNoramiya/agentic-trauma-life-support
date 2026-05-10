@@ -17,7 +17,7 @@
         }
       ],
       "actions_required": [
-        "Intubate immediately to secure the airway.",
+        "Intubate immediately to secure airway.",
         "Prepare for surgical airway if intubation fails."
       ]
     },
@@ -34,8 +34,8 @@
         }
       ],
       "actions_required": [
-        "Perform needle decompression of the left chest now.",
-        "Prepare for chest tube insertion if there is no improvement."
+        "Insert large-bore chest tube on the left side now.",
+        "Administer supplemental oxygen."
       ]
     },
     "C_circulation": {
@@ -45,23 +45,22 @@
       "dbp": null,
       "imaging_findings": [],
       "actions_required": [
-        "Initiate fluid resuscitation now.",
-        "Consider blood products if hypotension persists."
+        "Initiate aggressive fluid resuscitation now.",
+        "Perform FAST exam now."
       ]
     },
     "D_disability": {
       "concern_level": "moderate",
       "gcs": 14,
       "actions_required": [
-        "Repeat neuro exam every 15 minutes.",
-        "Prepare for head CT if GCS declines."
+        "Repeat neurologic exam every 15 minutes."
       ]
     },
     "E_exposure": {
       "concern_level": "low",
       "temp": null,
       "actions_required": [
-        "Undress the patient completely for full body inspection <15min."
+        "Undress patient completely for full body inspection."
       ]
     }
   },
@@ -69,8 +68,8 @@
     "priority": "urgent",
     "recommended_actions": [
       {
-        "action": "Transfer to trauma bay for definitive care.",
-        "rationale": "The patient has multiple life-threatening injuries requiring immediate intervention.",
+        "action": "Transfer to trauma bay for advanced care.",
+        "rationale": "Patient has multiple life-threatening injuries requiring immediate intervention.",
         "urgency": "now",
         "citation_id": null
       }
@@ -80,45 +79,33 @@
       "when": "now"
     },
     "additional_imaging": [
-      "FAST exam now",
-      "CT chest/abdomen/pelvis <5min"
+      "CT chest/abdomen/pelvis now."
     ],
     "labs": [
-      "Type and crossmatch now",
-      "CBC, coags <5min"
+      "CBC, type and cross, coags now."
     ]
   },
   "red_flags": [
     {
       "flag": "Tension pneumothorax",
       "evidence": [
-        "Decreased breath sounds on the left",
-        "JVD",
-        "Tracheal deviation right"
+        "Tracheal deviation right",
+        "Decreased breath sounds on the left"
       ],
-      "immediate_action": "Needle decompression now"
+      "immediate_action": "Insert large-bore chest tube on the left side now."
     }
   ],
-  "citations": [
-    {
-      "id": "EAST PMG-p9-c5",
-      "source": "EAST PMG — page 9",
-      "section": "Laterality of air volume in the lungs long after blunt chest trauma.",
-      "quote": "Laterality of air volume in the lungs long after blunt chest trauma.",
-      "url": null
-    }
-  ],
+  "citations": [],
   "model_metadata": {
-    "model": "ATLS_Triage_v1.0",
+    "model": "ATLS_Triage_v1_0",
     "confidence": "high",
     "limitations": [
-      "Single AP view, no lateral",
-      "Image quality limits assessment of the right costophrenic angle"
+      "Single AP view, no lateral."
     ],
-    "disclaimer": "This output is for decision support only and should not be used as a diagnosis or for unsupervised clinical use.",
+    "disclaimer": "This output is for decision support only and does not constitute a diagnosis. It should not be used for unsupervised clinical practice.",
     "verifier_notes": [
-      "The draft correctly identifies tracheal deviation to the right and decreased lung volume on the left, matching the X-ray findings.",
-      "The draft appropriately prioritizes actions for tension pneumothorax, which is supported by the imaging and clinical presentation."
+      "The draft correctly identifies tracheal deviation and decreased lung volume on the left, consistent with a tension pneumothorax. However, there is no mention of JVD in the X-ray, so this should be removed from the red flag evidence.",
+      "The draft appropriately sets high concern levels for A_airway, B_breathing, and C_circulation, reflecting the severity of the tension pneumothorax."
     ]
   }
 }

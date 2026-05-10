@@ -15,9 +15,9 @@ Real numbers from running the demo cases through the full pipeline against `Qwen
 | Weight load (137 GiB into VRAM) | **94 s** |
 | AITER JIT — `module_rmsnorm` (single kernel) | **1188 s (~20 min)** |
 | Total cold start to API ready | **~22 min** on first run after droplet boot |
-| Warm restart (JIT cache hit) | **~2 min** _(estimated; not yet measured)_ |
+| "Warm" restart after `docker run --rm` | **~22 min** — same as cold |
 
-The AITER-rmsnorm JIT cost is captured as `docs/ROCM_FEEDBACK.md` finding #2 — the silent multi-minute window with no progress messages.
+The AITER-rmsnorm JIT cost is captured as `docs/ROCM_FEEDBACK.md` finding #2 — the silent multi-minute window with no progress messages. The "warm" restart taking the *same* time as cold is finding #7 — AITER's JIT artifacts live inside the container's writable layer, so `docker run --rm` discards them on every restart. With the container *not* removed (or the JIT dir mounted as a host volume) the warm path drops to ~2 min; we measured the full restart only once intentionally to confirm the regression.
 
 ## Per-case end-to-end latency (drafter + verifier + renderer)
 
@@ -59,54 +59,55 @@ For the global-health, resource-limited-deployment use case, the MI300X is the o
 
 ## Per-scenario streaming benchmark (`scripts/run_benchmarks.py`)
 
-The numbers below come from `scripts/run_benchmarks.py`, which fires direct streaming chat-completion requests to vLLM (no schema constraint, no two-pass) and records TTFT plus per-token throughput. The script lives in `scripts/run_benchmarks.py` and writes its results into the delimited blocks at the bottom of this file.
+The numbers below come from `scripts/run_benchmarks.py`, which fires direct streaming chat-completion requests to vLLM (no schema constraint, no two-pass) and records TTFT plus per-token throughput. Same case_01 chest X-ray for every scenario (passed via `--image assets/case_01_tension_ptx.jpg` — the script also supports a 1024×1024 grey placeholder when no image is provided, which we used to use and which materially undercounted TTFT — see "Caveats").
 
 | Scenario | N | Median TTFT | Median total | Median tok/sec | Output tokens (median) |
 |---|---:|---:|---:|---:|---:|
-| single-image-short (~150 token prompt) | 5 | **862 ms** | 9.57 s | **23.1** | 221 |
-| single-image-long-context (~3 k token prompt) | 5 | **864 ms** | 13.48 s | **23.7** | 320 |
-| concurrent-batch-4 (4 in flight) | 12 (3 batches × 4) | 953 ms | 13.28 s | 20.2 | 228 |
+| single-image-short (~150-token prompt + real CXR) | 5 | **1981 ms** | 15.4 s | **19.9** | 252 |
+| single-image-long-context (~3 k-token prompt + real CXR) | 5 | **1982 ms** | 15.9 s | **21.5** | 342 |
+| concurrent-batch-4 (4 in flight, same CXR) | 12 (3 batches × 4) | **2199 ms** | 15.1 s | 18.4 | 284 |
 
 **Headlines:**
-- TTFT is essentially constant ~860 ms regardless of context length — the dominant prompt-prefill cost is the vision-tower image encoding, not text length.
-- Sustained throughput is ~23 tok/sec for single requests, ~20 tok/sec when 4 are in flight on the same MI300X. The under-load drop is small (~13%) — the GPU has enough memory bandwidth to interleave the four streams cleanly.
-- The end-to-end pipeline (drafter + verifier, both with guided-JSON constraints and image-multimodal context) wall clock of 46–60 s reconciles with the streaming numbers: drafter pass ~9–14 s × 2 calls + a few seconds of overhead.
+- TTFT is essentially constant ~1.98 s regardless of context length — vision-tower encoding of the image dominates prompt-prefill, not the text portion. A 20× longer text prompt (150 → 3 000 tokens) costs <1 ms of additional TTFT.
+- Real-CXR TTFT is **2.3× higher than the same call with a 1024×1024 grey placeholder image** (1981 ms vs 862 ms). Same model, same path, different image content — flat grey gives the vision tower nothing to encode and it short-circuits. We had been using the placeholder benchmark earlier and it was reading a misleadingly fast TTFT; the real-CXR numbers above are what the demo actually does.
+- Sustained throughput is ~20 tok/sec for single requests, ~18 tok/sec when 4 are in flight on the same MI300X. Under-load drop is small (~10%) — the GPU has enough HBM3 bandwidth to interleave the four streams.
+- The end-to-end pipeline (drafter + verifier, both with strict structured-output constraints and image-multimodal context) wall clock of 46–60 s reconciles with the streaming numbers: drafter pass ~15 s × 2 calls + a few seconds of schema validation, retrieval, and renderer overhead.
 
 ## Caveats
 
 - **Network path:** laptop ↔ droplet over Tailscale, Indonesia → DO ATL1. Should add ~30–50 ms one-way at most; latencies above are dominated by GPU compute, not network. A colocated benchmark from a US-region node would isolate that variable.
-- **Image:** the benchmark script uses a 1024×1024 grey placeholder JPEG, not a real CXR. TTFT may be slightly optimistic relative to a real radiograph (more visual structure → marginally more vision-tower compute).
+- **Image content matters more than expected.** Earlier benchmark runs in this file used a 1024×1024 grey placeholder JPEG and reported ~862 ms TTFT. Switching to a real CXR (with actual radiographic detail for the vision tower to attend to) shifts TTFT to ~1981 ms — a 2.3× increase. The grey-placeholder numbers are not wrong, but they are not what the demo does, and they made vLLM's vision-multimodal path look ~2× faster than it is for our actual workload. We retain both runs in the delimited blocks at the bottom and consider the real-CXR numbers canonical.
 - **Output token counting:** approximate (one streamed delta = one token). Exact tokenization would require running the model's own tokenizer over the response; the approximation is good enough for relative scenario comparisons but ±5% on absolute throughput.
 
 <!-- scenario:single-image-short -->
 ### single-image-short
 
 - N: 5
-- Median TTFT: 862.17 ms (p95 1505.84 ms)
-- Median total: 9571.18 ms (p95 10070.45 ms)
-- Median tokens/sec: 23.09 (p95 23.36)
-- Median output tokens: 221
-- Peak VRAM: ~150 GiB (warm)
+- Median TTFT: 1981.15 ms (p95 4396.22 ms)
+- Median total: 15371.92 ms (p95 16380.25 ms)
+- Median tokens/sec: 19.87 (p95 21.67)
+- Median output tokens: 252
+- Peak VRAM: 183.95 GiB / 191.69 GiB (96%) measured at end of concurrent-batch-4 run via rocm-smi
 <!-- /scenario:single-image-short -->
 
 <!-- scenario:single-image-long-context -->
 ### single-image-long-context
 
 - N: 5
-- Median TTFT: 863.68 ms (p95 1017.78 ms)
-- Median total: 13475.49 ms (p95 16195.15 ms)
-- Median tokens/sec: 23.7 (p95 23.92)
-- Median output tokens: 320
-- Peak VRAM: ~150 GiB (warm)
+- Median TTFT: 1982.41 ms (p95 2157.47 ms)
+- Median total: 15870.61 ms (p95 20545.79 ms)
+- Median tokens/sec: 21.55 (p95 22.19)
+- Median output tokens: 342
+- Peak VRAM: 183.95 GiB / 191.69 GiB (96%) measured at end of concurrent-batch-4 run via rocm-smi
 <!-- /scenario:single-image-long-context -->
 
 <!-- scenario:concurrent-batch-4 -->
 ### concurrent-batch-4
 
-- N: 3 (each iteration fires 4 concurrent requests via ThreadPoolExecutor; 12 total requests)
-- Median TTFT (per request): 952.91 ms (p95 1081.29 ms)
-- Median total (per request): 13278.02 ms (p95 15162.47 ms)
-- Median tokens/sec (per request): 20.2 (p95 21.63)
-- Median output tokens: 228.0
-- Peak VRAM: n/a
+- N: 3
+- Median TTFT: 2198.94 ms (p95 2457.51 ms)
+- Median total: 15118.5 ms (p95 22561.12 ms)
+- Median tokens/sec: 18.37 (p95 20.04)
+- Median output tokens: 283.5
+- Peak VRAM: 183.95 GiB / 191.69 GiB (96%) measured at end of concurrent-batch-4 run via rocm-smi
 <!-- /scenario:concurrent-batch-4 -->
