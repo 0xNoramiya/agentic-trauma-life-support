@@ -242,7 +242,6 @@ Engineering blog post (`docs/BLOG_POST.md`) walks through these as "what we'd wa
 │   ├── ROCM_FEEDBACK.md      Seven numbered bring-up findings (for AMD)
 │   ├── DEMO_CASES.md         The six clinical vignettes
 │   ├── SPIKE_235B_AWQ.md     The Day-1 stretch experiment (skipped, with rationale)
-│   ├── blog_image_prompts.txt  Inline-image prompts paired to the blog post
 │   ├── demo_outputs/         Per-case JSON + SUMMARY.md + first-real-run write-ups
 │   └── logs/                 vLLM startup, rocm-smi, AITER cache listing
 ├── assets/                   Six demo X-rays (gitignored except sources.json + README)
